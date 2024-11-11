@@ -32,32 +32,6 @@ public class UserController {
 		}
 	}
 
-	// Add a flashcard set to a user
-	@PostMapping("/{id}/flashcardSets/add")
-	public ResponseEntity<User> addFlashcardSet(@PathVariable String id, @RequestBody FlashcardSet flashcardSet) {
-		Optional<User> userOptional = userRepository.findById(id);
-
-		if (userOptional.isPresent()) {
-			User user = userOptional.get();
-
-			// Ensure title and flashcards are initialized
-			if (flashcardSet.getTitle() == null) {
-				flashcardSet.setTitle("Untitled Set");
-			}
-			if (flashcardSet.getFlashcards() == null) {
-				flashcardSet.setFlashcards(new ArrayList<>());
-			}
-
-			// Add and save
-			user.addFlashcardSet(flashcardSet);
-			userRepository.save(user); // MongoDB will assign IDs here
-
-			return ResponseEntity.ok(user);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-
 	// Get all users
 	@GetMapping("/getAll")
 	public ResponseEntity<List<User>> getAllMessages() {
@@ -111,39 +85,42 @@ public class UserController {
 	// Get all Flashcards of a set of a single user
 	@GetMapping("/{userId}/flashcardSets/{setId}/flashcards")
 	public ResponseEntity<List<Flashcard>> getAllFlashcardsOfASet(@PathVariable("userId") String userId,
-			@PathVariable("setId") String setId) {
-
-		// Find the user by userId
-		Optional<User> user = userRepository.findById(userId);
-
-		// Check if the user exists
-		if (user.isPresent()) {
-			// Get the flashcard sets list
-			List<FlashcardSet> flashcardSets = user.get().getFlashcardSets();
-
-			// Check if the flashcard sets are not null and not empty
-			if (flashcardSets != null && !flashcardSets.isEmpty()) {
-				// Find the flashcard set by setId
-				FlashcardSet flashcardSet = flashcardSets.stream().filter(set -> set.getId().equals(setId)).findFirst()
-						.orElse(null);
-
-				// If the flashcard set is found
-				if (flashcardSet != null) {
-					// Return all flashcards in the set
-					return ResponseEntity.ok(flashcardSet.getFlashcards());
-				} else {
-					// Return 404 if flashcard set is not found
-					return ResponseEntity.notFound().build();
-				}
-			} else {
-				// Return 404 if no flashcard sets are found
-				return ResponseEntity.notFound().build();
-			}
-		} else {
-			// Return 404 if the user is not found
-			return ResponseEntity.notFound().build();
-		}
+	        @PathVariable("setId") String setId) {
+	    
+	    // Find the user by userId
+	    Optional<User> user = userRepository.findById(userId);
+	    
+	    // Check if the user exists
+	    if (user.isPresent()) {
+	        // Get the flashcard sets list
+	        List<FlashcardSet> flashcardSets = user.get().getFlashcardSets();
+	        
+	        // Check if the flashcard sets are not null and not empty
+	        if (flashcardSets != null && !flashcardSets.isEmpty()) {
+	            // Find the flashcard set by setId
+	            FlashcardSet flashcardSet = flashcardSets.stream()
+	                    .filter(set -> set.getId().equals(setId))
+	                    .findFirst()
+	                    .orElse(null);
+	            
+	            // If the flashcard set is found
+	            if (flashcardSet != null) {
+	                // Return all flashcards in the set
+	                return ResponseEntity.ok(flashcardSet.getFlashcards());
+	            } else {
+	                // Return 404 if flashcard set is not found
+	                return ResponseEntity.notFound().build();
+	            }
+	        } else {
+	            // Return 404 if no flashcard sets are found
+	            return ResponseEntity.notFound().build();
+	        }
+	    } else {
+	        // Return 404 if the user is not found
+	        return ResponseEntity.notFound().build();
+	    }
 	}
+
 
 //  Update the title of a specific FlashcardSet
 	@PutMapping("/{userId}/flashcardSets/{setId}/updateTitle")
@@ -169,7 +146,6 @@ public class UserController {
 		}
 	}
 
-	// Add a flashcard to a flashcardSet of a single user
 	@PutMapping("/{userId}/flashcardSets/{setId}/addFlashcard")
 	public ResponseEntity<FlashcardSet> addFlashcardToSet(@PathVariable("userId") String userId,
 			@PathVariable("setId") String setId, @RequestBody Flashcard flashcard) {
@@ -193,119 +169,47 @@ public class UserController {
 		return ResponseEntity.ok(set); // Return the updated flashcard set
 	}
 
-	// Update question of a flashcard
-	@PutMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/updateQuestion")
-	public ResponseEntity<FlashcardSet> updateFlashcardQuestion(@PathVariable("userId") String userId,
-			@PathVariable("setId") String setId, @PathVariable("flashcardId") String flashcardId,
-			@RequestBody Map<String, String> newQuestion) {
+	// Delete a user by ID
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<User> deleteUser(@PathVariable String id) {
+		Optional<User> user = userRepository.findById(id);
 
-		// Find the user by userId
-		Optional<User> userOptional = userRepository.findById(userId);
-		if (!userOptional.isPresent()) {
-			return ResponseEntity.notFound().build(); // Return 404 if user is not found
-		}
-		User user = userOptional.get();
-
-		// Find the flashcard set by setId
-		FlashcardSet flashcardSet = user.getFlashcardSets().stream().filter(u -> u.getId().equals(setId)).findFirst()
-				.orElse(null);
-		if (flashcardSet == null) {
-			return ResponseEntity.notFound().build(); // Flashcard set not found
-		}
-
-		// Find the flashcard in the set
-		Flashcard flashcard = flashcardSet.getFlashcards().stream().filter(f -> f.getId().equals(flashcardId))
-				.findFirst().orElse(null);
-
-		if (flashcard == null) {
-			return ResponseEntity.notFound().build(); // Flashcard not found
-		}
-		String newQuestionUnpacked = newQuestion.get("question");
-		if (newQuestionUnpacked != null) {
-			flashcard.setQuestion(newQuestionUnpacked);
-			userRepository.save(user);
-			return ResponseEntity.ok(flashcardSet); // Return the updated flashcard set
+		if (user.isPresent()) {
+			userRepository.deleteById(id);
+			return ResponseEntity.ok(user.get()); // Return deleted user data
 		} else {
-			return ResponseEntity.badRequest().body(null);
-		}
-
-	}
-
-	// Update question of a flashcard
-	@PutMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/updateAnswer")
-	public ResponseEntity<FlashcardSet> updateFlashcardAnswer(@PathVariable("userId") String userId,
-			@PathVariable("setId") String setId, @PathVariable("flashcardId") String flashcardId,
-			@RequestBody Map<String, String> newAnswer) {
-
-		// Find the user by userId
-		Optional<User> userOptional = userRepository.findById(userId);
-		if (!userOptional.isPresent()) {
-			return ResponseEntity.notFound().build(); // Return 404 if user is not found
-		}
-		User user = userOptional.get();
-
-		// Find the flashcard set by setId
-		FlashcardSet flashcardSet = user.getFlashcardSets().stream().filter(u -> u.getId().equals(setId)).findFirst()
-				.orElse(null);
-		if (flashcardSet == null) {
-			return ResponseEntity.notFound().build(); // Flashcard set not found
-		}
-
-		// Find the flashcard in the set
-		Flashcard flashcard = flashcardSet.getFlashcards().stream().filter(f -> f.getId().equals(flashcardId))
-				.findFirst().orElse(null);
-
-		if (flashcard == null) {
-			return ResponseEntity.notFound().build(); // Flashcard not found
-		}
-		String newAnswerUnpacked = newAnswer.get("answer");
-		if (newAnswerUnpacked != null) {
-			flashcard.setAnswer(newAnswerUnpacked);
-			userRepository.save(user);
-			return ResponseEntity.ok(flashcardSet); // Return the updated flashcard set
-		} else {
-			return ResponseEntity.badRequest().body(null);
+			return ResponseEntity.notFound().build();
 		}
 	}
 
-	@DeleteMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/removeFlashcard")
-	public ResponseEntity<FlashcardSet> removeFlashcardFromSet(@PathVariable("userId") String userId,
-			@PathVariable("setId") String setId, @PathVariable("flashcardId") String flashcardId) {
+	// Add a flashcard set to a user
+	@PostMapping("/{id}/flashcardSets/add")
+	public ResponseEntity<User> addFlashcardSet(@PathVariable String id, @RequestBody FlashcardSet flashcardSet) {
+		Optional<User> userOptional = userRepository.findById(id);
 
-		// Find the user by userId
-		Optional<User> userOptional = userRepository.findById(userId);
-		if (!userOptional.isPresent()) {
-			return ResponseEntity.notFound().build(); // Return 404 if user is not found
-		}
-		User user = userOptional.get();
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
 
-		List<FlashcardSet> flashcardSets = user.getFlashcardSets();
+			// Ensure title and flashcards are initialized
+			if (flashcardSet.getTitle() == null) {
+				flashcardSet.setTitle("Untitled Set");
+			}
+			if (flashcardSet.getFlashcards() == null) {
+				flashcardSet.setFlashcards(new ArrayList<>());
+			}
 
-		if (flashcardSets == null || flashcardSets.isEmpty()) {
-			return ResponseEntity.notFound().build(); // Return 404 if the user has no flashcard sets
-		}
+			// Add and save
+			user.addFlashcardSet(flashcardSet);
+			userRepository.save(user); // MongoDB will assign IDs here
 
-		// Find the flashcard set by setId
-		FlashcardSet flashcardSet = flashcardSets.stream().filter(set -> set.getId().equals(setId)).findFirst()
-				.orElse(null);
-
-		if (flashcardSet == null) {
-			return ResponseEntity.notFound().build(); // Return 404 if flashcard set is not found
-		}
-
-		// Find and remove the flashcard by flashcardId
-		boolean removed = flashcardSet.getFlashcards().removeIf(flashcard -> flashcard.getId().equals(flashcardId));
-		if (removed) {
-			// Save the user with updated flashcard set after deletion
-			userRepository.save(user);
-			return ResponseEntity.ok(flashcardSet); // Return updated flashcard set
+			return ResponseEntity.ok(user);
 		} else {
-			return ResponseEntity.notFound().build(); // Return 404 if flashcard is not found
+			return ResponseEntity.notFound().build();
 		}
 	}
 
 	// Remove a flashcard set from a user by flashcard set ID
-	@DeleteMapping("/{userId}/flashcardSets/{flashcardSetId}/removeFlashcardSet")
+	@DeleteMapping("/{userId}/flashcardSets/{flashcardSetId}")
 	public ResponseEntity<User> removeFlashcardSetFromUser(@PathVariable String userId,
 			@PathVariable String flashcardSetId) {
 		Optional<User> user = userRepository.findById(userId);
@@ -315,19 +219,6 @@ public class UserController {
 			existingUser.getFlashcardSets().removeIf(set -> set.getId().equals(flashcardSetId)); // Remove by ID
 			userRepository.save(existingUser);
 			return ResponseEntity.ok(existingUser);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-
-	// Delete a user by ID
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<User> deleteUser(@PathVariable String id) {
-		Optional<User> user = userRepository.findById(id);
-
-		if (user.isPresent()) {
-			userRepository.deleteById(id);
-			return ResponseEntity.ok(user.get()); // Return deleted user data
 		} else {
 			return ResponseEntity.notFound().build();
 		}
