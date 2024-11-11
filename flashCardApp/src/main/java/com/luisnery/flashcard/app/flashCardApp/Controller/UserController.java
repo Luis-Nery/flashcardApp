@@ -8,9 +8,6 @@ import com.luisnery.flashcard.app.flashCardApp.Model.Flashcard;
 import com.luisnery.flashcard.app.flashCardApp.Model.FlashcardSet;
 import com.luisnery.flashcard.app.flashCardApp.Model.User;
 import com.luisnery.flashcard.app.flashCardApp.Repository.UserRepository;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseToken;
-import com.google.firebase.auth.FirebaseAuthException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,32 +23,12 @@ public class UserController {
 
 	// Create a new user
 	@PostMapping("/create")
-	public ResponseEntity<User> createUser(@RequestBody User user, @RequestHeader("Authorization") String token) {
+	public ResponseEntity<User> createUser(@RequestBody User user) {
 		try {
-			// Extract the Firebase ID token from the Authorization header
-			String idToken = token.replace("Bearer ", "");
-
-			// Verify the ID token using Firebase Admin SDK
-			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-			String uid = decodedToken.getUid(); // Get UID from Firebase
-
-			// Now you can use the UID and other data from the request body to create a user
-			// For example, if your User object has email and displayName fields
-			user.setId(uid); // Set the Firebase UID
-			// user.setEmail(decodedToken.getEmail()); // Optionally, you can set the email
-			// user.setDisplayName(decodedToken.getName()); // Optionally, set the display
-			// name
-
-			// Save the user to the database
 			User savedUser = userRepository.save(user);
-
 			return ResponseEntity.ok(savedUser);
-		} catch (FirebaseAuthException e) {
-			// If the token is invalid or expired, return a 401 Unauthorized response
-			return ResponseEntity.status(401).body(null);
 		} catch (Exception e) {
-			// Handle any other errors
-			return ResponseEntity.status(500).body(null);
+			return ResponseEntity.status(500).build();
 		}
 	}
 
