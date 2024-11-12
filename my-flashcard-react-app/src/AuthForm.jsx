@@ -1,106 +1,185 @@
-import React, { useState } from 'react';
-import {auth} from "./firebaseConfiguration.js";
-import {signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import React, { useState, useEffect } from 'react';
+import { auth } from './firebaseConfiguration.js';
+import { 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged, 
+    sendEmailVerification, 
+    GoogleAuthProvider, 
+    signInWithPopup 
+} from 'firebase/auth';
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom'; // Updated import
+import { FaTimes } from 'react-icons/fa';  // Import "X" icon from react-icons
+import './AuthForm.css';
 
-const AuthForm = () => {
+
+const AuthorizationForm = () => {
+  const location = useLocation();
+  const navigate = useNavigate(); // Replaced useHistory with useNavigate
+
+  const isSignUp = location.pathname === "/signup"; // Check if route is /signup
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [initializing, setInitializing] = useState(true); // New state for auth initialization
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user || null);
+      setInitializing(false); // Set to false once auth check is done
+    });
+    return () => unsubscribe();
+  }, []);
 
-  // Function to handle login
   const handleLogin = async (event) => {
     event.preventDefault();
+    setLoading(true);
+    setError('');
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      // Retrieve ID token and send it to backend
-      if (user) {
-        const idToken = await user.getIdToken();
-        await retrieveUserFromBackEnd(idToken);
-      }
-      alert("Login successful and user data sent to backend!");
+      setUser(userCredential.user);
+      alert('Login successful!');
     } catch (error) {
-      console.error("Error logging in:", error.message);
-      alert("Login failed.");
+      setError(`Login failed: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Function to handle signup
   const handleSignup = async (event) => {
     event.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+    
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Retrieve ID token and send it to backend
-      if (user) {
-        const idToken = await user.getIdToken();
-        await sendUserTokenToBackend(idToken,user.email);
-      }
-      alert("Signup successful and user data sent to backend!");
+      const newUser = userCredential.user;
+      const idToken = await newUser.getIdToken();
+      await sendUserTokenToBackend(idToken, newUser.email);
+      setUser(newUser);
+      alert('Signup successful!');
+      
+      // Send email verification
+      await sendEmailVerification(newUser);
+      alert("Verification email sent. Please verify your email before logging in.");
     } catch (error) {
-      console.error("Error signing up:", error.message);
-      alert("Signup failed.");
+      setError(`Signup failed: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Function to send the user ID token to the backend
-  const sendUserTokenToBackend = async (idToken,email) => {
+  const sendUserTokenToBackend = async (idToken, email) => {
     try {
-        const userData = idToken;
-      const response =await axios.post('http://localhost:8080/api/users/create', {userData,email}, {
+      await axios.post('http://localhost:8080/api/users/create', { idToken, email }, {
         headers: {
           'Authorization': `Bearer ${idToken}`
         }
       });
-      console.log("User token sent to backend and user saved successfully:", response.data);
+      console.log('User token sent to backend');
     } catch (error) {
-      console.error("Error sending user token to backend:", error);
-      alert("Failed to save user to backend.");
+      console.error('Error sending user token to backend:', error);
     }
   };
 
-  const retrieveUserFromBackEnd = async (idToken) => {
+  const handleSignOut = async () => {
     try {
-        await axios.get('/api/users/create', {}, {
-          headers: {
-            'Authorization': `Bearer ${idToken}`
-          }
-        });
-        console.log("User token request to backend and retrieved successfully.");
-      } catch (error) {
-        console.error("Error sending user token to backend:", error);
-        alert("Failed to retrieve user from backend.");
-      }
-};
+      await signOut(auth);
+      setUser(null);
+      alert('Sign-out successful.');
+    } catch (error) {
+      console.error('Error signing out:', error.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const newUser = result.user;
+      setUser(newUser);
+      console.log('Google sign-in successful:', newUser);
+      alert('Google sign-in successful!');
+      
+      // Send user token to backend if needed
+      const idToken = await newUser.getIdToken();
+      await sendUserTokenToBackend(idToken, newUser.email);
+    } catch (error) {
+      console.error('Google sign-in error:', error.message);
+      alert('Google sign-in failed.');
+    }
+  };
+
+  if (initializing) {
+    return <div>Loading...</div>; // Show a loading message until auth is initialized
+  }
+  const handleCancel = () => {
+    navigate('/');  // Redirect to the landing page
+  };
 
   return (
     <div>
-      <h2>{isSignUp ? "Sign Up" : "Login"}</h2>
-      <form onSubmit={isSignUp ? handleSignup : handleLogin}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit">{isSignUp ? "Sign Up" : "Login"}</button>
-      </form>
-      <button onClick={() => setIsSignUp(!isSignUp)}>
-        {isSignUp ? "Already have an account? Login" : "Don't have an account? Sign Up"}
-      </button>
+      {user ? (
+        <div>
+          <h3>Welcome, {user.email}!</h3>
+          <button onClick={handleSignOut}>Sign Out</button>
+        </div>
+      ) : (
+        <div>
+          <button onClick={handleCancel} className="close-button">
+            <FaTimes /> {/* X Icon */}
+          </button>
+          <h2>{isSignUp ? 'Sign Up' : 'Login'}</h2>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          <form onSubmit={isSignUp ? handleSignup : handleLogin}>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+            />
+            {isSignUp && (
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm Password"
+                required
+              />
+            )}
+            <button type="submit" disabled={loading}>
+              {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Login'}
+            </button>
+          </form>
+          <button onClick={() => navigate(isSignUp ? '/login' : '/signup')}>
+            {isSignUp ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
+          </button>
+
+          {/* Google Sign-In Button */}
+          <button onClick={handleGoogleSignIn}>Sign in with Google</button>
+        </div>
+      )}
     </div>
   );
 };
 
-export default AuthForm;
+export default AuthorizationForm;
