@@ -97,16 +97,31 @@ public class UserController {
 
 	// Get all sets of a User
 	@GetMapping("/{userId}/flashcardSets")
-	public ResponseEntity<List<FlashcardSet>> getAllFlashcardSetsForUser(@PathVariable String userId) {
-		Optional<User> user = userRepository.findById(userId);
+	public ResponseEntity<List<FlashcardSet>> getAllFlashcardSetsForUser(
+			@RequestHeader("Authorization") String firebaseId) {
+		try {
+			// Extract and verify the Firebase ID token from the Authorization header
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid(); // Get UID from Firebase
 
-		if (user.isPresent()) {
-			// Get all the flashcard sets associated with the user
-			List<FlashcardSet> flashcardSets = user.get().getFlashcardSets();
+			// Find the user by their UID
+			Optional<User> user = userRepository.findById(uid);
 
-			return ResponseEntity.ok(flashcardSets); // Return the list of flashcard sets
-		} else {
-			return ResponseEntity.notFound().build(); // Return 404 if user is not found
+			if (user.isPresent()) {
+				// Get all flashcard sets associated with the authenticated user
+				List<FlashcardSet> flashcardSets = user.get().getFlashcardSets();
+
+				return ResponseEntity.ok(flashcardSets); // Return the list of flashcard sets
+			} else {
+				return ResponseEntity.notFound().build(); // Return 404 if user is not found
+			}
+		} catch (FirebaseAuthException e) {
+			// If the token is invalid or expired, return a 401 Unauthorized response
+			return ResponseEntity.status(401).body(null);
+		} catch (Exception e) {
+			// Handle any other errors
+			return ResponseEntity.status(500).body(null);
 		}
 	}
 
@@ -133,38 +148,46 @@ public class UserController {
 
 	// Get all Flashcards of a set of a single user
 	@GetMapping("/{userId}/flashcardSets/{setId}/flashcards")
-	public ResponseEntity<List<Flashcard>> getAllFlashcardsOfASet(@PathVariable("userId") String userId,
-			@PathVariable("setId") String setId) {
+	public ResponseEntity<List<Flashcard>> getAllFlashcardsOfASet(@PathVariable("setId") String setId,
+			@RequestHeader("Authorization") String firebaseId) {
 
-		// Find the user by userId
-		Optional<User> user = userRepository.findById(userId);
+		try {
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid(); // Get UID from Firebase
 
-		// Check if the user exists
-		if (user.isPresent()) {
-			// Get the flashcard sets list
-			List<FlashcardSet> flashcardSets = user.get().getFlashcardSets();
+			// Find the user by userId
+			Optional<User> user = userRepository.findById(uid);
 
-			// Check if the flashcard sets are not null and not empty
-			if (flashcardSets != null && !flashcardSets.isEmpty()) {
-				// Find the flashcard set by setId
-				FlashcardSet flashcardSet = flashcardSets.stream().filter(set -> set.getId().equals(setId)).findFirst()
-						.orElse(null);
+			// Check if the user exists
+			if (user.isPresent()) {
+				// Get the flashcard sets list
+				List<FlashcardSet> flashcardSets = user.get().getFlashcardSets();
 
-				// If the flashcard set is found
-				if (flashcardSet != null) {
-					// Return all flashcards in the set
-					return ResponseEntity.ok(flashcardSet.getFlashcards());
+				// Check if the flashcard sets are not null and not empty
+				if (flashcardSets != null && !flashcardSets.isEmpty()) {
+					// Find the flashcard set by setId
+					FlashcardSet flashcardSet = flashcardSets.stream().filter(set -> set.getId().equals(setId))
+							.findFirst().orElse(null);
+
+					// If the flashcard set is found
+					if (flashcardSet != null) {
+						// Return all flashcards in the set
+						return ResponseEntity.ok(flashcardSet.getFlashcards());
+					} else {
+						// Return 404 if flashcard set is not found
+						return ResponseEntity.notFound().build();
+					}
 				} else {
-					// Return 404 if flashcard set is not found
+					// Return 404 if no flashcard sets are found
 					return ResponseEntity.notFound().build();
 				}
 			} else {
-				// Return 404 if no flashcard sets are found
+				// Return 404 if the user is not found
 				return ResponseEntity.notFound().build();
 			}
-		} else {
-			// Return 404 if the user is not found
-			return ResponseEntity.notFound().build();
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
 		}
 	}
 

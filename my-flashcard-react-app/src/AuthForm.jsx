@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from './firebaseConfiguration.js';
-import { 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword, 
-    signOut, 
-    onAuthStateChanged, 
-    sendEmailVerification, 
-    GoogleAuthProvider, 
-    signInWithPopup 
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  sendEmailVerification,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'firebase/auth';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom'; // Updated import
 import { FaTimes } from 'react-icons/fa';  // Import "X" icon from react-icons
 import './AuthForm.css';
+import FlashcardSetList from './FlashcardSetList.jsx';
 
 
 const AuthorizationForm = () => {
@@ -44,24 +45,25 @@ const AuthorizationForm = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
       alert('Login successful!');
+      navigate('/flashcardSetList');  // Navigate to the flashcard sets page after login
     } catch (error) {
       setError(`Login failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
-
+  
   const handleSignup = async (event) => {
     event.preventDefault();
     setLoading(true);
     setError('');
-    
+  
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       setLoading(false);
       return;
     }
-    
+  
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const newUser = userCredential.user;
@@ -69,16 +71,18 @@ const AuthorizationForm = () => {
       await sendUserTokenToBackend(idToken, newUser.email);
       setUser(newUser);
       alert('Signup successful!');
-      
+  
       // Send email verification
       await sendEmailVerification(newUser);
       alert("Verification email sent. Please verify your email before logging in.");
+      navigate('/flashcardSetList');  // Navigate to the flashcard sets page after signup
     } catch (error) {
       setError(`Signup failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const sendUserTokenToBackend = async (idToken, email) => {
     try {
@@ -111,15 +115,19 @@ const AuthorizationForm = () => {
       setUser(newUser);
       console.log('Google sign-in successful:', newUser);
       alert('Google sign-in successful!');
-      
+  
       // Send user token to backend if needed
       const idToken = await newUser.getIdToken();
       await sendUserTokenToBackend(idToken, newUser.email);
+  
+      // Redirect to flashcard sets after successful login
+      navigate('/flashcardSetList');  // Navigate to the flashcard sets page after Google sign-in
     } catch (error) {
       console.error('Google sign-in error:', error.message);
       alert('Google sign-in failed.');
     }
   };
+  
 
   if (initializing) {
     return <div>Loading...</div>; // Show a loading message until auth is initialized
@@ -133,7 +141,9 @@ const AuthorizationForm = () => {
       {user ? (
         <div>
           <h3>Welcome, {user.email}!</h3>
+          <p>You are now signed in.</p>
           <button onClick={handleSignOut}>Sign Out</button>
+          <FlashcardSetList></FlashcardSetList>
         </div>
       ) : (
         <div>
