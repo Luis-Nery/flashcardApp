@@ -2,37 +2,40 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { auth } from './firebaseConfiguration';
+import './FlashcardSetPage.css';
 
 const FlashcardSetPage = () => {
   const { setId } = useParams();
   const navigate = useNavigate();
   const [flashcards, setFlashcards] = useState([]);
+  const [flashcardSetTitle, setFlashcardSetTitle] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortAlphabetically, setSortAlphabetically] = useState(false); // State for toggling sort
+  const [sortAlphabetically, setSortAlphabetically] = useState(false);
 
   useEffect(() => {
-    const fetchFlashcards = async (userIdToken) => {
+    const fetchFlashcardsAndTitle = async (userIdToken) => {
       try {
-        const response = await axios.get(
+        const setTitleResponse = await axios.get(
+          `http://localhost:8080/api/users/${userIdToken}/flashcardSets/${setId}`,
+          { headers: { Authorization: `Bearer ${userIdToken}` } }
+        );
+        setFlashcardSetTitle(setTitleResponse.data.title);
+
+        const flashcardsResponse = await axios.get(
           `http://localhost:8080/api/users/${userIdToken}/flashcardSets/${setId}/flashcards`,
           { headers: { Authorization: `Bearer ${userIdToken}` } }
         );
 
-        // Optionally sort flashcards based on the state
-        let flashcardsData = response.data;
+        let flashcardsData = flashcardsResponse.data;
         if (sortAlphabetically) {
-          flashcardsData = flashcardsData.sort((a, b) => {
-            if (a.question < b.question) return -1;
-            if (a.question > b.question) return 1;
-            return 0;
-          });
+          flashcardsData = flashcardsData.sort((a, b) => a.question.localeCompare(b.question));
         }
 
         setFlashcards(flashcardsData);
       } catch (err) {
         console.error(err);
-        setError('Failed to fetch flashcards');
+        setError('Failed to fetch flashcards or flashcard set title');
       } finally {
         setLoading(false);
       }
@@ -43,41 +46,34 @@ const FlashcardSetPage = () => {
         if (user) {
           try {
             const userIdToken = await user.getIdToken();
-            fetchFlashcards(userIdToken);
-          } catch (tokenError) {
+            fetchFlashcardsAndTitle(userIdToken);
+          } catch {
             setError('Failed to retrieve authentication token');
           }
         } else {
-          navigate('/login'); // Redirect to login if not authenticated
+          navigate('/login');
         }
       });
     };
 
     authenticateAndFetchData();
-  }, [setId, navigate, sortAlphabetically]); // Add sortAlphabetically as a dependency
+  }, [setId, navigate, sortAlphabetically]);
 
-  const toggleSort = () => {
-    setSortAlphabetically((prev) => !prev); // Toggle the sorting order
-  };
-
-  const handleGoBack = () => {
-    navigate(-1); // Go back to the previous page
-  };
+  const toggleSort = () => setSortAlphabetically((prev) => !prev);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
-      <button onClick={handleGoBack}>Back</button> {/* Back button */}
-      <h2>Flashcards in Set {setId}</h2>
-      <button onClick={toggleSort}>
+    <div className="flashcard-set-page">
+      <h2>Current Set: {flashcardSetTitle || 'Unknown'}</h2>
+      <button className="sort-button" onClick={toggleSort}>
         {sortAlphabetically ? 'Sort by Default' : 'Sort Alphabetically'}
       </button>
       {flashcards.map((flashcard) => (
-        <div key={flashcard.id}>
-          <h3>{flashcard.question}</h3>
-          <p>{flashcard.answer}</p>
+        <div className="flashcard" key={flashcard.id}>
+          <h3>Question: {flashcard.question}</h3>
+          <p>Answer: {flashcard.answer}</p>
         </div>
       ))}
     </div>
