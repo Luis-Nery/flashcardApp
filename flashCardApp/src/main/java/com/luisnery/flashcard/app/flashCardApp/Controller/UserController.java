@@ -127,10 +127,15 @@ public class UserController {
 
 	// Get a single FlashcardSet by ID of a User
 	@GetMapping("/{userId}/flashcardSets/{setId}")
-	public ResponseEntity<FlashcardSet> getFlashcardSetById(@PathVariable("userId") String userId,
+	public ResponseEntity<FlashcardSet> getFlashcardSetById(@RequestHeader("Authorization") String firebaseId,
 			@PathVariable("setId") String setId) {
-
-		Optional<User> user = userRepository.findById(userId);
+		
+		try {
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid(); // Get UID from Firebase
+			
+		Optional<User> user = userRepository.findById(uid);
 
 		if (user.isPresent()) {
 			FlashcardSet set = user.get().getFlashcardSets().stream().filter(s -> s.getId().equals(setId)).findFirst()
@@ -144,6 +149,9 @@ public class UserController {
 		} else {
 			return ResponseEntity.notFound().build(); // User not found
 		}
+	}catch(Exception e) {
+		return ResponseEntity.notFound().build(); // User not found
+	}
 	}
 
 	// Get all Flashcards of a set of a single user

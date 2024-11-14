@@ -140,10 +140,7 @@ const AuthorizationForm = () => {
     <div>
       {user ? (
         <div>
-          <h3>Welcome, {user.email}!</h3>
-          <p>You are now signed in.</p>
-          <button onClick={handleSignOut}>Sign Out</button>
-          <FlashcardSetList></FlashcardSetList>
+          {navigate('/flashcardSetList')} {/* Redirect to flashcard sets if user is already signed in */}
         </div>
       ) : (
         <div>
