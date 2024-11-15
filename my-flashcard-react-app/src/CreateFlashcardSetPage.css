@@ -1,0 +1,178 @@
+.create-flashcard-set-page {
+  max-width: 700px; /* Increased max-width for a larger flashcard */
+  margin: 0 auto;
+  padding: 20px;
+  text-align: left;
+}
+
+h2, h3 {
+  color: #333;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+input[type="text"], textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.flashcard-input {
+  border: 1px solid #ccc; /* Light border */
+  padding: 30px; /* Increased padding for a larger flashcard */
+  margin-bottom: 20px;
+  border-radius: 10px; /* Rounded corners */
+  background-color: #fefefe; /* Slight off-white background */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px; /* Increased gap for more space */
+  flex-wrap: wrap; /* Allows input fields to wrap on small screens */
+}
+
+.flashcard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px; /* Increased margin between the header and fields */
+  width: 100%; /* Ensure header takes up full width */
+}
+
+.remove-flashcard-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #dc3545;
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 50%; /* Circular button */
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.remove-flashcard-button:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+.add-flashcard-button, .submit-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 10px 5px;
+  transition: background-color 0.3s ease;
+}
+
+.add-flashcard-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.add-flashcard-button:hover {
+  background-color: #0056b3;
+}
+
+.submit-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.submit-button:hover {
+  background-color: #218838;
+}
+
+.error-message {
+  color: #d9534f;
+  font-weight: bold;
+}
+
+.success-message {
+  color: #5cb85c;
+  font-weight: bold;
+}
+
+/* Styling for the flexed inputs (question and answer) */
+.flashcard-input label {
+  width: 45%; /* Ensure labels do not stretch too far */
+  font-weight: normal; /* Slightly lighter font weight for labels */
+  margin-bottom: 8px; /* Add space between labels and inputs */
+}
+
+.flashcard-input .question,
+.flashcard-input .answer {
+  flex: 1;
+}
+
+.flashcard-input textarea {
+  width: 100%;
+  min-height: 50px;
+  resize: none; /* Disable manual resizing */
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.1); /* Subtle inner shadow for depth */
+}
+
+.flashcard-input .question input,
+.flashcard-input .answer input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.1); /* Inner shadow for input */
+}
+
+.flashcard-input .question textarea,
+.flashcard-input .answer textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  min-height: 50px;
+  resize: none;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.1); /* Inner shadow for textarea */
+}
+
+.flashcard-input .question textarea:focus,
+.flashcard-input .answer textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.flashcard-input .question input:focus,
+.flashcard-input .answer input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Adding spacing between question and answer */
+.flashcard-input .question {
+  margin-bottom: 20px; /* Adds space between question and answer */
+}
+
+/* Styling for the question section */
+.flashcard-input .question {
+  flex-basis: 45%; /* Ensures question section takes up 45% of the width */
+}
+
+/* Styling for the answer section */
+.flashcard-input .answer {
+  flex-basis: 45%; /* Ensures answer section takes up 45% of the width */
+  margin-right: 23px; /* Adds more space to the right side of the answer box */
+}

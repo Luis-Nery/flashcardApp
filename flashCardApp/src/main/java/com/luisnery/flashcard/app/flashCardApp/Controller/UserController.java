@@ -56,28 +56,32 @@ public class UserController {
 	}
 
 	// Add a flashcard set to a user
-	@PostMapping("/{id}/flashcardSets/add")
-	public ResponseEntity<User> addFlashcardSet(@PathVariable String id, @RequestBody FlashcardSet flashcardSet) {
-		Optional<User> userOptional = userRepository.findById(id);
+	@PostMapping("/{userId}/flashcardSets/create")
+	public ResponseEntity<FlashcardSet> createFlashcardSet(@RequestHeader("Authorization") String firebaseId,
+			@RequestBody FlashcardSet flashcardSet) {
+		try {
+			// Validate Firebase token
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid();
 
-		if (userOptional.isPresent()) {
-			User user = userOptional.get();
-
-			// Ensure title and flashcards are initialized
-			if (flashcardSet.getTitle() == null) {
-				flashcardSet.setTitle("Untitled Set");
+			// Check if user exists
+			Optional<User> user = userRepository.findById(uid);
+			if (!user.isPresent()) {
+				return ResponseEntity.notFound().build(); // User not found
 			}
-			if (flashcardSet.getFlashcards() == null) {
-				flashcardSet.setFlashcards(new ArrayList<>());
-			}
 
-			// Add and save
-			user.addFlashcardSet(flashcardSet);
-			userRepository.save(user); // MongoDB will assign IDs here
+			// Add the new flashcard set
+			FlashcardSet newSet = new FlashcardSet();
+			newSet.setTitle(flashcardSet.getTitle());
+			newSet.setFlashcards(flashcardSet.getFlashcards());
 
-			return ResponseEntity.ok(user);
-		} else {
-			return ResponseEntity.notFound().build();
+			user.get().getFlashcardSets().add(newSet);
+			userRepository.save(user.get());
+
+			return ResponseEntity.ok(newSet); // Return the created flashcard set
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
 		}
 	}
 
@@ -129,29 +133,29 @@ public class UserController {
 	@GetMapping("/{userId}/flashcardSets/{setId}")
 	public ResponseEntity<FlashcardSet> getFlashcardSetById(@RequestHeader("Authorization") String firebaseId,
 			@PathVariable("setId") String setId) {
-		
+
 		try {
 			String idToken = firebaseId.replace("Bearer ", "");
 			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
 			String uid = decodedToken.getUid(); // Get UID from Firebase
-			
-		Optional<User> user = userRepository.findById(uid);
 
-		if (user.isPresent()) {
-			FlashcardSet set = user.get().getFlashcardSets().stream().filter(s -> s.getId().equals(setId)).findFirst()
-					.orElse(null);
+			Optional<User> user = userRepository.findById(uid);
 
-			if (set != null) {
-				return ResponseEntity.ok(set); // Return found flashcard set
+			if (user.isPresent()) {
+				FlashcardSet set = user.get().getFlashcardSets().stream().filter(s -> s.getId().equals(setId))
+						.findFirst().orElse(null);
+
+				if (set != null) {
+					return ResponseEntity.ok(set); // Return found flashcard set
+				} else {
+					return ResponseEntity.notFound().build(); // Set not found
+				}
 			} else {
-				return ResponseEntity.notFound().build(); // Set not found
+				return ResponseEntity.notFound().build(); // User not found
 			}
-		} else {
+		} catch (Exception e) {
 			return ResponseEntity.notFound().build(); // User not found
 		}
-	}catch(Exception e) {
-		return ResponseEntity.notFound().build(); // User not found
-	}
 	}
 
 	// Get all Flashcards of a set of a single user
@@ -223,28 +227,39 @@ public class UserController {
 		}
 	}
 
-	// Add a flashcard to a flashcardSet of a single user
-	@PutMapping("/{userId}/flashcardSets/{setId}/addFlashcard")
-	public ResponseEntity<FlashcardSet> addFlashcardToSet(@PathVariable("userId") String userId,
-			@PathVariable("setId") String setId, @RequestBody Flashcard flashcard) {
+	// Add flashcards to a flashcardSet of a single user
+	@PutMapping("/{userId}/flashcardSets/{setId}/addFlashcards")
+	public ResponseEntity<FlashcardSet> addFlashcardsToSet(@RequestHeader("Authorization") String firebaseId,
+			@PathVariable("setId") String setId, @RequestBody List<Flashcard> flashcards) {
+		try {
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid(); // Get UID from Firebase
 
-		// Find the user by userId
-		Optional<User> user = userRepository.findById(userId);
-		if (!user.isPresent()) {
+			// Find the user by userId
+			Optional<User> user = userRepository.findById(uid);
+			if (!user.isPresent()) {
+				return ResponseEntity.notFound().build(); // Return 404 if user is not found
+			}
+
+			// Find the flashcard set by setId
+			FlashcardSet set = user.get().getFlashcardSets().stream().filter(s -> s.getId().equals(setId)).findFirst()
+					.orElse(null);
+
+			if (set == null) {
+				return ResponseEntity.notFound().build(); // Return 404 if set is not found
+			}
+
+			// Add each flashcard to the set
+			set.getFlashcards().addAll(flashcards);
+
+			// Save the updated user with the added flashcards
+			userRepository.save(user.get());
+
+			return ResponseEntity.ok(set); // Return the updated flashcard set
+		} catch (Exception e) {
 			return ResponseEntity.notFound().build(); // Return 404 if user is not found
 		}
-
-		// Find the flashcard set by setId
-		FlashcardSet set = user.get().getFlashcardSets().stream().filter(s -> s.getId().equals(setId)).findFirst()
-				.orElse(null);
-
-		// Add the flashcard to the set
-		set.getFlashcards().add(flashcard);
-
-		// Save the updated user with the added flashcard
-		userRepository.save(user.get());
-
-		return ResponseEntity.ok(set); // Return the updated flashcard set
 	}
 
 	// Update question of a flashcard
