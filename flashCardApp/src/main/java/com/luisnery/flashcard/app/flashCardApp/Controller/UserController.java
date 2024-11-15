@@ -205,11 +205,15 @@ public class UserController {
 
 //  Update the title of a specific FlashcardSet
 	@PutMapping("/{userId}/flashcardSets/{setId}/updateTitle")
-	public ResponseEntity<FlashcardSet> updateFlashcardSetTitle(@PathVariable("userId") String userId,
+	public ResponseEntity<FlashcardSet> updateFlashcardSetTitle(@RequestHeader("Authorization") String firebaseId,
 			@PathVariable("setId") String setId, @RequestBody Map<String, String> titleUpdateRequest) { // Accepting a
 																										// Map
-
-		Optional<User> user = userRepository.findById(userId);
+		try {
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid(); // Get UID from Firebase
+			
+		Optional<User> user = userRepository.findById(uid);
 
 		if (user.isPresent()) {
 			FlashcardSet set = user.get().getFlashcardSets().stream().filter(s -> s.getId().equals(setId)).findFirst()
@@ -225,7 +229,10 @@ public class UserController {
 		} else {
 			return ResponseEntity.notFound().build(); // User not found
 		}
+	}catch(Exception e) {
+		return ResponseEntity.notFound().build(); // User not found
 	}
+		}
 
 	// Add flashcards to a flashcardSet of a single user
 	@PutMapping("/{userId}/flashcardSets/{setId}/addFlashcards")
@@ -261,6 +268,60 @@ public class UserController {
 			return ResponseEntity.notFound().build(); // Return 404 if user is not found
 		}
 	}
+	
+	@PutMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/updateQuestionAndAnswer")
+	public ResponseEntity<Flashcard> updateFlashcard(@RequestHeader("Authorization") String firebaseId,
+	        @PathVariable("setId") String setId,
+	        @PathVariable("flashcardId") String flashcardId,
+	        @RequestBody Flashcard updatedFlashcard) {
+	    try {
+	        // Validate Firebase token
+	        String idToken = firebaseId.replace("Bearer ", "");
+	        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+	        String uid = decodedToken.getUid();
+
+	        // Retrieve the user from the database
+	        Optional<User> userOptional = userRepository.findById(uid);
+	        if (!userOptional.isPresent()) {
+	            return ResponseEntity.notFound().build(); // User not found
+	        }
+
+	        User user = userOptional.get();
+	        Optional<FlashcardSet> flashcardSetOptional = user.getFlashcardSets().stream()
+	            .filter(set -> set.getId().equals(setId))
+	            .findFirst();
+
+	        if (!flashcardSetOptional.isPresent()) {
+	            return ResponseEntity.notFound().build(); // Flashcard set not found
+	        }
+
+	        FlashcardSet flashcardSet = flashcardSetOptional.get();
+
+	        // Find the flashcard within the set
+	        Optional<Flashcard> flashcardOptional = flashcardSet.getFlashcards().stream()
+	            .filter(flashcard -> flashcard.getId().equals(flashcardId))
+	            .findFirst();
+
+	        if (!flashcardOptional.isPresent()) {
+	            return ResponseEntity.notFound().build(); // Flashcard not found
+	        }
+
+	        Flashcard flashcard = flashcardOptional.get();
+
+	        // Update the flashcard details
+	        flashcard.setQuestion(updatedFlashcard.getQuestion());
+	        flashcard.setAnswer(updatedFlashcard.getAnswer());
+
+	        // Save the user and flashcard set
+	        userRepository.save(user);
+
+	        return ResponseEntity.ok(flashcard); // Return the updated flashcard
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(500).body(null); // Internal Server Error
+	    }
+	}
+
 
 	// Update question of a flashcard
 	@PutMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/updateQuestion")
@@ -300,7 +361,7 @@ public class UserController {
 
 	}
 
-	// Update question of a flashcard
+	// Update answer of a flashcard
 	@PutMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/updateAnswer")
 	public ResponseEntity<FlashcardSet> updateFlashcardAnswer(@PathVariable("userId") String userId,
 			@PathVariable("setId") String setId, @PathVariable("flashcardId") String flashcardId,
