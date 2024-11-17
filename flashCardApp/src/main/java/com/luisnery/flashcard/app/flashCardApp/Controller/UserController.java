@@ -435,20 +435,35 @@ public class UserController {
 	}
 
 	// Remove a flashcard set from a user by flashcard set ID
-	@DeleteMapping("/{userId}/flashcardSets/{flashcardSetId}/removeFlashcardSet")
-	public ResponseEntity<User> removeFlashcardSetFromUser(@PathVariable String userId,
-			@PathVariable String flashcardSetId) {
-		Optional<User> user = userRepository.findById(userId);
+	@DeleteMapping("/{userId}/flashcardSets/{setId}/removeFlashcardSet")
+	public ResponseEntity<Void> deleteFlashcardSet(@RequestHeader("Authorization") String firebaseId,
+	                                               @PathVariable String userId,
+	                                               @PathVariable String setId) {
+	    try {
+	        String idToken = firebaseId.replace("Bearer ", "");
+	        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+	        String uid = decodedToken.getUid();
 
-		if (user.isPresent()) {
-			User existingUser = user.get();
-			existingUser.getFlashcardSets().removeIf(set -> set.getId().equals(flashcardSetId)); // Remove by ID
-			userRepository.save(existingUser);
-			return ResponseEntity.ok(existingUser);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+	        Optional<User> userOptional = userRepository.findById(uid);
+	        if (!userOptional.isPresent()) {
+	            return ResponseEntity.notFound().build(); // User not found
+	        }
+
+	        User user = userOptional.get();
+	        boolean removed = user.getFlashcardSets().removeIf(set -> set.getId().equals(setId));
+
+	        if (!removed) {
+	            return ResponseEntity.notFound().build(); // Set not found
+	        }
+
+	        userRepository.save(user); // Save updated user
+	        return ResponseEntity.noContent().build(); // Successfully deleted
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(500).build(); // Internal server error
+	    }
 	}
+
 
 	// Delete a user by ID
 	@DeleteMapping("/delete/{id}")
