@@ -15,7 +15,6 @@ import { FaTimes } from 'react-icons/fa';  // Import "X" icon from react-icons
 import './AuthForm.css';
 import FlashcardSetList from './FlashcardSetList.jsx';
 
-
 const AuthorizationForm = () => {
   const location = useLocation();
   const navigate = useNavigate(); // Replaced useHistory with useNavigate
@@ -37,6 +36,12 @@ const AuthorizationForm = () => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      navigate('/flashcardSetList');  // Redirect to flashcard sets page after successful login/signup
+    }
+  }, [user, navigate]); // Runs whenever the user state changes
+
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -45,7 +50,6 @@ const AuthorizationForm = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
       alert('Login successful!');
-      navigate('/flashcardSetList');  // Navigate to the flashcard sets page after login
     } catch (error) {
       setError(`Login failed: ${error.message}`);
     } finally {
@@ -75,14 +79,12 @@ const AuthorizationForm = () => {
       // Send email verification
       await sendEmailVerification(newUser);
       alert("Verification email sent. Please verify your email before logging in.");
-      navigate('/flashcardSetList');  // Navigate to the flashcard sets page after signup
     } catch (error) {
       setError(`Signup failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
-  
 
   const sendUserTokenToBackend = async (idToken, email) => {
     try {
@@ -115,11 +117,11 @@ const AuthorizationForm = () => {
       setUser(newUser);
       console.log('Google sign-in successful:', newUser);
       alert('Google sign-in successful!');
-  
+
       // Send user token to backend if needed
       const idToken = await newUser.getIdToken();
       await sendUserTokenToBackend(idToken, newUser.email);
-  
+
       // Redirect to flashcard sets after successful login
       navigate('/flashcardSetList');  // Navigate to the flashcard sets page after Google sign-in
     } catch (error) {
@@ -127,7 +129,6 @@ const AuthorizationForm = () => {
       alert('Google sign-in failed.');
     }
   };
-  
 
   if (initializing) {
     return <div>Loading...</div>; // Show a loading message until auth is initialized
@@ -140,7 +141,7 @@ const AuthorizationForm = () => {
     <div>
       {user ? (
         <div>
-          {navigate('/flashcardSetList')} {/* Redirect to flashcard sets if user is already signed in */}
+          {/* If user is authenticated, no need for this part anymore */}
         </div>
       ) : (
         <div>

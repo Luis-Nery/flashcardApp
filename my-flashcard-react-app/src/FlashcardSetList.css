@@ -1,44 +1,213 @@
 /* Container styling */
 .flashcard-set-list-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.flashcard-set-list-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Flashcard set item styling */
+.flashcard-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin: 15px 0;
+  background-color: #f7f9fc;
+  border: 1px solid #e0e4e8;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.flashcard-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.flashcard-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  flex-grow: 1; /* Ensures title takes available space */
+  margin-right: 10px;
+  color: black; /* Set name in red */
+}
+
+/* Delete button styling */
+.delete-button {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: color 0.2s;
+  z-index: 2; /* Ensure it is above the clickable background */
+}
+
+.delete-button:hover {
+  color: darkred;
+}
+
+/* Prevent interaction with trashcan icons when popup is active */
+.disable-pointer-events .delete-button {
+  pointer-events: none; /* Disable clicking */
+  opacity: 0.5; /* Optionally, reduce opacity to indicate it's disabled */
+}
+
+/* Popup container and background overlay */
+.delete-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto; /* Ensure popup is interactive */
+  z-index: 3; /* Popup should be above trashcan icons */
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1; /* Blocks interaction with elements below */
+}
+
+.popup-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.popup-content h3 {
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.popup-content p {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Input field inside popup */
+.popup-content input {
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding doesn't affect the width */
+  font-size: 1rem;
+  margin-bottom: 20px; /* Space between the input and buttons */
+}
+
+/* Success message styling */
+.delete-success-message {
+  color: green;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Popup actions */
+.popup-actions button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.popup-actions button:first-child {
+  background-color: gray;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.popup-actions button:first-child:hover {
+  background-color: #555;
+}
+
+.popup-actions button:last-child {
+  background-color: red;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.popup-actions button:last-child:hover {
+  background-color: darkred;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .flashcard-set-list-container {
+    padding: 10px;
   }
-  
-  .flashcard-set-list-container h2 {
-    text-align: center;
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  /* Flashcard set item styling */
+
   .flashcard-item {
-    display: block;
-    padding: 15px 20px;
-    margin: 15px 0;
-    background-color: #f7f9fc;
-    border: 1px solid #e0e4e8;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
-    color: #333;
-    transition: transform 0.2s, box-shadow 0.2s;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .flashcard-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+  .flashcard-title {
+    margin-bottom: 10px;
+    font-size: 1rem;
   }
-  
-  .flashcard-item li {
-    font-size: 1.2rem;
-    font-weight: 500;
+
+  .delete-button {
+    align-self: flex-end;
   }
-  
-  /* Add some spacing and styling for links */
-  .flashcard-item:hover {
-    cursor: pointer;
-    color: #0056b3;
+
+  .popup-content {
+    width: 95%;
   }
-  
+}
+/* Success message styling */
+.delete-success-message {
+  color: green;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+  animation: fadeInOut 2s forwards;
+}
+
+/* Animation for success message fade out */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
