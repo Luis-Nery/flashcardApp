@@ -85,6 +85,47 @@ public class UserController {
 		}
 	}
 
+	// Add flashcard to an existing flashcardSet of a user
+	@PostMapping("/{userId}/flashcardSets/{setId}/addFlashcard")
+	public ResponseEntity<Flashcard> addFlashcard(@RequestHeader("Authorization") String firebaseId,
+			@PathVariable("setId") String setId, @RequestBody Flashcard newFlashcard) {
+		try {
+			// Validate Firebase token
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid();
+
+			// Retrieve the user from the database
+			Optional<User> userOptional = userRepository.findById(uid);
+			if (!userOptional.isPresent()) {
+				return ResponseEntity.notFound().build(); // User not found
+			}
+
+			User user = userOptional.get();
+
+			// Retrieve the flashcard set
+			Optional<FlashcardSet> flashcardSetOptional = user.getFlashcardSets().stream()
+					.filter(set -> set.getId().equals(setId)).findFirst();
+
+			if (!flashcardSetOptional.isPresent()) {
+				return ResponseEntity.notFound().build(); // Flashcard set not found
+			}
+
+			FlashcardSet flashcardSet = flashcardSetOptional.get();
+
+			// Add the new flashcard to the set
+			flashcardSet.getFlashcards().add(newFlashcard);
+
+			// Save the updated flashcard set
+			userRepository.save(user);
+
+			return ResponseEntity.ok(newFlashcard); // Return the newly added flashcard
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body(null); // Internal Server Error
+		}
+	}
+
 	// Get all users
 	@GetMapping("/getAll")
 	public ResponseEntity<List<User>> getAllMessages() {
@@ -212,29 +253,29 @@ public class UserController {
 			String idToken = firebaseId.replace("Bearer ", "");
 			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
 			String uid = decodedToken.getUid(); // Get UID from Firebase
-			
-		Optional<User> user = userRepository.findById(uid);
 
-		if (user.isPresent()) {
-			FlashcardSet set = user.get().getFlashcardSets().stream().filter(s -> s.getId().equals(setId)).findFirst()
-					.orElse(null);
+			Optional<User> user = userRepository.findById(uid);
 
-			if (set != null && titleUpdateRequest.containsKey("title")) {
-				set.setTitle(titleUpdateRequest.get("title")); // Update title using the map
-				userRepository.save(user.get()); // Save updated user
-				return ResponseEntity.ok(set); // Return updated flashcard set
+			if (user.isPresent()) {
+				FlashcardSet set = user.get().getFlashcardSets().stream().filter(s -> s.getId().equals(setId))
+						.findFirst().orElse(null);
+
+				if (set != null && titleUpdateRequest.containsKey("title")) {
+					set.setTitle(titleUpdateRequest.get("title")); // Update title using the map
+					userRepository.save(user.get()); // Save updated user
+					return ResponseEntity.ok(set); // Return updated flashcard set
+				} else {
+					return ResponseEntity.notFound().build(); // Set or title not found
+				}
 			} else {
-				return ResponseEntity.notFound().build(); // Set or title not found
+				return ResponseEntity.notFound().build(); // User not found
 			}
-		} else {
+		} catch (Exception e) {
 			return ResponseEntity.notFound().build(); // User not found
 		}
-	}catch(Exception e) {
-		return ResponseEntity.notFound().build(); // User not found
 	}
-		}
 
-	// Add flashcards to a flashcardSet of a single user
+	// Add multiple flashcard to a flashcardSet of a single user
 	@PutMapping("/{userId}/flashcardSets/{setId}/addFlashcards")
 	public ResponseEntity<FlashcardSet> addFlashcardsToSet(@RequestHeader("Authorization") String firebaseId,
 			@PathVariable("setId") String setId, @RequestBody List<Flashcard> flashcards) {
@@ -268,168 +309,99 @@ public class UserController {
 			return ResponseEntity.notFound().build(); // Return 404 if user is not found
 		}
 	}
-	
+
+	// Updates the question and answer of a created flashcard.
 	@PutMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/updateQuestionAndAnswer")
 	public ResponseEntity<Flashcard> updateFlashcard(@RequestHeader("Authorization") String firebaseId,
-	        @PathVariable("setId") String setId,
-	        @PathVariable("flashcardId") String flashcardId,
-	        @RequestBody Flashcard updatedFlashcard) {
-	    try {
-	        // Validate Firebase token
-	        String idToken = firebaseId.replace("Bearer ", "");
-	        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-	        String uid = decodedToken.getUid();
-
-	        // Retrieve the user from the database
-	        Optional<User> userOptional = userRepository.findById(uid);
-	        if (!userOptional.isPresent()) {
-	            return ResponseEntity.notFound().build(); // User not found
-	        }
-
-	        User user = userOptional.get();
-	        Optional<FlashcardSet> flashcardSetOptional = user.getFlashcardSets().stream()
-	            .filter(set -> set.getId().equals(setId))
-	            .findFirst();
-
-	        if (!flashcardSetOptional.isPresent()) {
-	            return ResponseEntity.notFound().build(); // Flashcard set not found
-	        }
-
-	        FlashcardSet flashcardSet = flashcardSetOptional.get();
-
-	        // Find the flashcard within the set
-	        Optional<Flashcard> flashcardOptional = flashcardSet.getFlashcards().stream()
-	            .filter(flashcard -> flashcard.getId().equals(flashcardId))
-	            .findFirst();
-
-	        if (!flashcardOptional.isPresent()) {
-	            return ResponseEntity.notFound().build(); // Flashcard not found
-	        }
-
-	        Flashcard flashcard = flashcardOptional.get();
-
-	        // Update the flashcard details
-	        flashcard.setQuestion(updatedFlashcard.getQuestion());
-	        flashcard.setAnswer(updatedFlashcard.getAnswer());
-
-	        // Save the user and flashcard set
-	        userRepository.save(user);
-
-	        return ResponseEntity.ok(flashcard); // Return the updated flashcard
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(500).body(null); // Internal Server Error
-	    }
-	}
-
-
-	// Update question of a flashcard
-	@PutMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/updateQuestion")
-	public ResponseEntity<FlashcardSet> updateFlashcardQuestion(@PathVariable("userId") String userId,
 			@PathVariable("setId") String setId, @PathVariable("flashcardId") String flashcardId,
-			@RequestBody Map<String, String> newQuestion) {
+			@RequestBody Flashcard updatedFlashcard) {
+		try {
+			// Validate Firebase token
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid();
 
-		// Find the user by userId
-		Optional<User> userOptional = userRepository.findById(userId);
-		if (!userOptional.isPresent()) {
-			return ResponseEntity.notFound().build(); // Return 404 if user is not found
-		}
-		User user = userOptional.get();
+			// Retrieve the user from the database
+			Optional<User> userOptional = userRepository.findById(uid);
+			if (!userOptional.isPresent()) {
+				return ResponseEntity.notFound().build(); // User not found
+			}
 
-		// Find the flashcard set by setId
-		FlashcardSet flashcardSet = user.getFlashcardSets().stream().filter(u -> u.getId().equals(setId)).findFirst()
-				.orElse(null);
-		if (flashcardSet == null) {
-			return ResponseEntity.notFound().build(); // Flashcard set not found
-		}
+			User user = userOptional.get();
+			Optional<FlashcardSet> flashcardSetOptional = user.getFlashcardSets().stream()
+					.filter(set -> set.getId().equals(setId)).findFirst();
 
-		// Find the flashcard in the set
-		Flashcard flashcard = flashcardSet.getFlashcards().stream().filter(f -> f.getId().equals(flashcardId))
-				.findFirst().orElse(null);
+			if (!flashcardSetOptional.isPresent()) {
+				return ResponseEntity.notFound().build(); // Flashcard set not found
+			}
 
-		if (flashcard == null) {
-			return ResponseEntity.notFound().build(); // Flashcard not found
-		}
-		String newQuestionUnpacked = newQuestion.get("question");
-		if (newQuestionUnpacked != null) {
-			flashcard.setQuestion(newQuestionUnpacked);
+			FlashcardSet flashcardSet = flashcardSetOptional.get();
+
+			// Find the flashcard within the set
+			Optional<Flashcard> flashcardOptional = flashcardSet.getFlashcards().stream()
+					.filter(flashcard -> flashcard.getId().equals(flashcardId)).findFirst();
+
+			if (!flashcardOptional.isPresent()) {
+				return ResponseEntity.notFound().build(); // Flashcard not found
+			}
+
+			Flashcard flashcard = flashcardOptional.get();
+
+			// Update the flashcard details
+			flashcard.setQuestion(updatedFlashcard.getQuestion());
+			flashcard.setAnswer(updatedFlashcard.getAnswer());
+
+			// Save the user and flashcard set
 			userRepository.save(user);
-			return ResponseEntity.ok(flashcardSet); // Return the updated flashcard set
-		} else {
-			return ResponseEntity.badRequest().body(null);
-		}
 
-	}
-
-	// Update answer of a flashcard
-	@PutMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/updateAnswer")
-	public ResponseEntity<FlashcardSet> updateFlashcardAnswer(@PathVariable("userId") String userId,
-			@PathVariable("setId") String setId, @PathVariable("flashcardId") String flashcardId,
-			@RequestBody Map<String, String> newAnswer) {
-
-		// Find the user by userId
-		Optional<User> userOptional = userRepository.findById(userId);
-		if (!userOptional.isPresent()) {
-			return ResponseEntity.notFound().build(); // Return 404 if user is not found
-		}
-		User user = userOptional.get();
-
-		// Find the flashcard set by setId
-		FlashcardSet flashcardSet = user.getFlashcardSets().stream().filter(u -> u.getId().equals(setId)).findFirst()
-				.orElse(null);
-		if (flashcardSet == null) {
-			return ResponseEntity.notFound().build(); // Flashcard set not found
-		}
-
-		// Find the flashcard in the set
-		Flashcard flashcard = flashcardSet.getFlashcards().stream().filter(f -> f.getId().equals(flashcardId))
-				.findFirst().orElse(null);
-
-		if (flashcard == null) {
-			return ResponseEntity.notFound().build(); // Flashcard not found
-		}
-		String newAnswerUnpacked = newAnswer.get("answer");
-		if (newAnswerUnpacked != null) {
-			flashcard.setAnswer(newAnswerUnpacked);
-			userRepository.save(user);
-			return ResponseEntity.ok(flashcardSet); // Return the updated flashcard set
-		} else {
-			return ResponseEntity.badRequest().body(null);
+			return ResponseEntity.ok(flashcard); // Return the updated flashcard
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body(null); // Internal Server Error
 		}
 	}
 
+	// Deletes a Flashcard
 	@DeleteMapping("/{userId}/flashcardSets/{setId}/flashcards/{flashcardId}/removeFlashcard")
-	public ResponseEntity<FlashcardSet> removeFlashcardFromSet(@PathVariable("userId") String userId,
+	public ResponseEntity<FlashcardSet> removeFlashcardFromSet(@RequestHeader("Authorization") String firebaseId,
 			@PathVariable("setId") String setId, @PathVariable("flashcardId") String flashcardId) {
+		try {
+			// Validate Firebase token
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid();
 
-		// Find the user by userId
-		Optional<User> userOptional = userRepository.findById(userId);
-		if (!userOptional.isPresent()) {
-			return ResponseEntity.notFound().build(); // Return 404 if user is not found
-		}
-		User user = userOptional.get();
+			// Find the user by userId
+			Optional<User> userOptional = userRepository.findById(uid);
+			if (!userOptional.isPresent()) {
+				return ResponseEntity.notFound().build(); // Return 404 if user is not found
+			}
+			User user = userOptional.get();
 
-		List<FlashcardSet> flashcardSets = user.getFlashcardSets();
+			List<FlashcardSet> flashcardSets = user.getFlashcardSets();
 
-		if (flashcardSets == null || flashcardSets.isEmpty()) {
-			return ResponseEntity.notFound().build(); // Return 404 if the user has no flashcard sets
-		}
+			if (flashcardSets == null || flashcardSets.isEmpty()) {
+				return ResponseEntity.notFound().build(); // Return 404 if the user has no flashcard sets
+			}
 
-		// Find the flashcard set by setId
-		FlashcardSet flashcardSet = flashcardSets.stream().filter(set -> set.getId().equals(setId)).findFirst()
-				.orElse(null);
+			// Find the flashcard set by setId
+			FlashcardSet flashcardSet = flashcardSets.stream().filter(set -> set.getId().equals(setId)).findFirst()
+					.orElse(null);
 
-		if (flashcardSet == null) {
-			return ResponseEntity.notFound().build(); // Return 404 if flashcard set is not found
-		}
+			if (flashcardSet == null) {
+				return ResponseEntity.notFound().build(); // Return 404 if flashcard set is not found
+			}
 
-		// Find and remove the flashcard by flashcardId
-		boolean removed = flashcardSet.getFlashcards().removeIf(flashcard -> flashcard.getId().equals(flashcardId));
-		if (removed) {
-			// Save the user with updated flashcard set after deletion
-			userRepository.save(user);
-			return ResponseEntity.ok(flashcardSet); // Return updated flashcard set
-		} else {
+			// Find and remove the flashcard by flashcardId
+			boolean removed = flashcardSet.getFlashcards().removeIf(flashcard -> flashcard.getId().equals(flashcardId));
+			if (removed) {
+				// Save the user with updated flashcard set after deletion
+				userRepository.save(user);
+				return ResponseEntity.ok(flashcardSet); // Return updated flashcard set
+			} else {
+				return ResponseEntity.notFound().build(); // Return 404 if flashcard is not found
+			}
+		} catch (Exception E) {
 			return ResponseEntity.notFound().build(); // Return 404 if flashcard is not found
 		}
 	}
@@ -437,33 +409,31 @@ public class UserController {
 	// Remove a flashcard set from a user by flashcard set ID
 	@DeleteMapping("/{userId}/flashcardSets/{setId}/removeFlashcardSet")
 	public ResponseEntity<Void> deleteFlashcardSet(@RequestHeader("Authorization") String firebaseId,
-	                                               @PathVariable String userId,
-	                                               @PathVariable String setId) {
-	    try {
-	        String idToken = firebaseId.replace("Bearer ", "");
-	        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-	        String uid = decodedToken.getUid();
+			@PathVariable String userId, @PathVariable String setId) {
+		try {
+			String idToken = firebaseId.replace("Bearer ", "");
+			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			String uid = decodedToken.getUid();
 
-	        Optional<User> userOptional = userRepository.findById(uid);
-	        if (!userOptional.isPresent()) {
-	            return ResponseEntity.notFound().build(); // User not found
-	        }
+			Optional<User> userOptional = userRepository.findById(uid);
+			if (!userOptional.isPresent()) {
+				return ResponseEntity.notFound().build(); // User not found
+			}
 
-	        User user = userOptional.get();
-	        boolean removed = user.getFlashcardSets().removeIf(set -> set.getId().equals(setId));
+			User user = userOptional.get();
+			boolean removed = user.getFlashcardSets().removeIf(set -> set.getId().equals(setId));
 
-	        if (!removed) {
-	            return ResponseEntity.notFound().build(); // Set not found
-	        }
+			if (!removed) {
+				return ResponseEntity.notFound().build(); // Set not found
+			}
 
-	        userRepository.save(user); // Save updated user
-	        return ResponseEntity.noContent().build(); // Successfully deleted
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(500).build(); // Internal server error
-	    }
+			userRepository.save(user); // Save updated user
+			return ResponseEntity.noContent().build(); // Successfully deleted
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).build(); // Internal server error
+		}
 	}
-
 
 	// Delete a user by ID
 	@DeleteMapping("/delete/{id}")

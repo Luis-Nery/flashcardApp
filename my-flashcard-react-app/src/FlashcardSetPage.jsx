@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { auth } from './firebaseConfiguration';
 import './FlashcardSetPage.css';
+import { FaTrashAlt, FaPlus } from 'react-icons/fa';
 
 const FlashcardSetPage = () => {
   const { setId } = useParams();
@@ -13,14 +14,19 @@ const FlashcardSetPage = () => {
   const [error, setError] = useState(null);
   const [sortAlphabetically, setSortAlphabetically] = useState(false);
 
-  // State for editing title
+  // States for editing title and flashcards
   const [editingTitle, setEditingTitle] = useState(false);
   const [updatedTitle, setUpdatedTitle] = useState('');
-
-  // State for editing flashcards
   const [editingFlashcardId, setEditingFlashcardId] = useState(null);
   const [updatedQuestion, setUpdatedQuestion] = useState('');
   const [updatedAnswer, setUpdatedAnswer] = useState('');
+
+  // State for delete confirmation
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [deleteFlashcardId, setDeleteFlashcardId] = useState(null);
+
+  // State for delete status (success or failure)
+  const [deleteStatus, setDeleteStatus] = useState(null); // null, 'success', or 'failed'
 
   useEffect(() => {
     const fetchFlashcardsAndTitle = async (userIdToken) => {
@@ -30,7 +36,7 @@ const FlashcardSetPage = () => {
           { headers: { Authorization: `Bearer ${userIdToken}` } }
         );
         setFlashcardSetTitle(setTitleResponse.data.title);
-        setUpdatedTitle(setTitleResponse.data.title); // Set initial value for updated title
+        setUpdatedTitle(setTitleResponse.data.title);
 
         const flashcardsResponse = await axios.get(
           `http://localhost:8080/api/users/${userIdToken}/flashcardSets/${setId}/flashcards`,
@@ -39,9 +45,10 @@ const FlashcardSetPage = () => {
 
         let flashcardsData = flashcardsResponse.data;
         if (sortAlphabetically) {
-          flashcardsData = flashcardsData.sort((a, b) => a.question.localeCompare(b.question));
+          flashcardsData = flashcardsData.sort((a, b) =>
+            a.question.localeCompare(b.question)
+          );
         }
-
         setFlashcards(flashcardsData);
       } catch (err) {
         console.error(err);
@@ -54,12 +61,8 @@ const FlashcardSetPage = () => {
     const authenticateAndFetchData = () => {
       auth.onAuthStateChanged(async (user) => {
         if (user) {
-          try {
-            const userIdToken = await user.getIdToken();
-            fetchFlashcardsAndTitle(userIdToken);
-          } catch {
-            setError('Failed to retrieve authentication token');
-          }
+          const userIdToken = await user.getIdToken();
+          fetchFlashcardsAndTitle(userIdToken);
         } else {
           navigate('/login');
         }
@@ -68,6 +71,64 @@ const FlashcardSetPage = () => {
 
     authenticateAndFetchData();
   }, [setId, navigate, sortAlphabetically]);
+
+  const deleteFlashcard = async (flashcardId) => {
+    try {
+      const user = auth.currentUser;
+      const userIdToken = await user.getIdToken();
+      await axios.delete(
+        `http://localhost:8080/api/users/${userIdToken}/flashcardSets/${setId}/flashcards/${flashcardId}/removeFlashcard`,
+        { 
+          headers: { Authorization: `Bearer ${userIdToken}` } 
+        }
+      );
+
+      setFlashcards((prev) => prev.filter((flashcard) => flashcard.id !== flashcardId));
+      setDeleteStatus('success'); // Set delete status to success
+    } catch (err) {
+      setError('Failed to delete flashcard');
+      console.error(err);
+      setDeleteStatus('failed'); // Set delete status to failed
+    } finally {
+      setTimeout(() => {
+        setShowDeletePopup(false);
+        setDeleteFlashcardId(null);
+        setDeleteStatus(null); // Reset status after closing the popup
+      }, 2000); // Wait 2 seconds before closing the popup
+    }
+  };
+
+  const confirmDeleteFlashcard = (flashcardId) => {
+    setDeleteFlashcardId(flashcardId);
+    setDeleteStatus(null); // Reset delete status for new confirmation
+    setShowDeletePopup(true);
+  };
+
+  const addNewFlashcard = async () => {
+    const newFlashcard = {
+      question: '',
+      answer: '',
+    };
+
+    try {
+      const user = auth.currentUser;
+      const userIdToken = await user.getIdToken();
+
+      const response = await axios.post(
+        `http://localhost:8080/api/users/${userIdToken}/flashcardSets/${setId}/addFlashcard`,
+        newFlashcard,
+        { headers: { Authorization: `Bearer ${userIdToken}` } }
+      );
+
+      setFlashcards((prevFlashcards) => [...prevFlashcards, response.data]);
+      setEditingFlashcardId(response.data.id);
+      setUpdatedQuestion('');
+      setUpdatedAnswer('');
+    } catch (err) {
+      setError('Failed to add new flashcard');
+      console.error(err);
+    }
+  };
 
   const toggleSort = () => setSortAlphabetically((prev) => !prev);
 
@@ -79,46 +140,40 @@ const FlashcardSetPage = () => {
     try {
       const user = auth.currentUser;
       const userIdToken = await user.getIdToken();
-      
-      const updatedTitleData = { title: updatedTitle };
       await axios.put(
         `http://localhost:8080/api/users/${userIdToken}/flashcardSets/${setId}/updateTitle`,
-        updatedTitleData,
+        { title: updatedTitle },
         { headers: { Authorization: `Bearer ${userIdToken}` } }
       );
-      
-      // Update the title locally
+
       setFlashcardSetTitle(updatedTitle);
-      setEditingTitle(false); // Exit edit mode
+      setEditingTitle(false);
     } catch (err) {
       setError('Failed to save title changes');
     }
   };
 
   const handleCancelTitleEdit = () => {
-    setUpdatedTitle(flashcardSetTitle); // Revert to original title
-    setEditingTitle(false); // Exit edit mode
+    setUpdatedTitle(flashcardSetTitle);
+    setEditingTitle(false);
   };
 
-  const handleEditClick = (flashcard) => {
+  const handleEditFlashcard = (flashcard) => {
     setEditingFlashcardId(flashcard.id);
     setUpdatedQuestion(flashcard.question);
     setUpdatedAnswer(flashcard.answer);
   };
 
-  const handleSaveChanges = async (flashcardId) => {
+  const handleSaveFlashcardChanges = async (flashcardId) => {
     try {
       const user = auth.currentUser;
       const userIdToken = await user.getIdToken();
-      
-      const updatedFlashcard = { question: updatedQuestion, answer: updatedAnswer };
       await axios.put(
         `http://localhost:8080/api/users/${userIdToken}/flashcardSets/${setId}/flashcards/${flashcardId}/updateQuestionAndAnswer`,
-        updatedFlashcard,
+        { question: updatedQuestion, answer: updatedAnswer },
         { headers: { Authorization: `Bearer ${userIdToken}` } }
       );
-      
-      // Update the flashcard in the local state
+
       setFlashcards((prevFlashcards) =>
         prevFlashcards.map((flashcard) =>
           flashcard.id === flashcardId
@@ -126,15 +181,13 @@ const FlashcardSetPage = () => {
             : flashcard
         )
       );
-      
-      // Reset the editing state
       setEditingFlashcardId(null);
     } catch (err) {
-      setError('Failed to save changes');
+      setError('Failed to save flashcard changes');
     }
   };
 
-  const handleCancelEdit = () => {
+  const handleCancelFlashcardEdit = () => {
     setEditingFlashcardId(null);
   };
 
@@ -145,22 +198,26 @@ const FlashcardSetPage = () => {
     <div className="flashcard-set-page">
       <div className="flashcard-set-header">
         {editingTitle ? (
-          <div>
+          <div className="flashcard-set-title">
             <input
               type="text"
               value={updatedTitle}
               onChange={(e) => setUpdatedTitle(e.target.value)}
+              className="edit-title-input"
             />
-            <button onClick={handleSaveTitle}>Save</button>
-            <button onClick={handleCancelTitleEdit}>Cancel</button>
+            <div>
+              <button onClick={handleSaveTitle}>Save</button>
+              <button onClick={handleCancelTitleEdit}>Cancel</button>
+            </div>
           </div>
         ) : (
-          <h2>
-            Current Set: {flashcardSetTitle || 'Unknown'} 
-            <button onClick={handleEditTitle} className="edit-title-button">Edit Title</button>
-          </h2>
+          <div className="flashcard-set-title">
+            <span>Current Set: {flashcardSetTitle || 'Untitled Set'}</span>
+            <button onClick={handleEditTitle}>Edit Title</button>
+          </div>
         )}
       </div>
+
       <button className="sort-button" onClick={toggleSort}>
         {sortAlphabetically ? 'Sort by Default' : 'Sort Alphabetically'}
       </button>
@@ -168,12 +225,17 @@ const FlashcardSetPage = () => {
         <div className="flashcard" key={flashcard.id}>
           <div className="flashcard-header">
             <h3>Question: {flashcard.question}</h3>
-            <button
-              className="edit-button"
-              onClick={() => handleEditClick(flashcard)}
-            >
-              Edit
-            </button>
+            <div>
+              <button className="edit-button" onClick={() => handleEditFlashcard(flashcard)}>
+                Edit
+              </button>
+              <button
+                className="delete-button"
+                onClick={() => confirmDeleteFlashcard(flashcard.id)}
+              >
+                <FaTrashAlt />
+              </button>
+            </div>
           </div>
           {editingFlashcardId === flashcard.id ? (
             <div>
@@ -185,14 +247,37 @@ const FlashcardSetPage = () => {
                 value={updatedAnswer}
                 onChange={(e) => setUpdatedAnswer(e.target.value)}
               />
-              <button onClick={() => handleSaveChanges(flashcard.id)}>Save</button>
-              <button onClick={handleCancelEdit}>Cancel</button>
+              <button onClick={() => handleSaveFlashcardChanges(flashcard.id)}>Save</button>
+              <button onClick={handleCancelFlashcardEdit}>Cancel</button>
             </div>
           ) : (
             <p>Answer: {flashcard.answer}</p>
           )}
         </div>
       ))}
+      <button className="add-button" onClick={addNewFlashcard}>
+        <FaPlus /> 
+      </button>
+
+      {showDeletePopup && (
+        <div className="delete-popup">
+          {deleteStatus === null ? (
+            <div className='delete-popup-card'>
+              <p>Are you sure you want to delete this flashcard?</p>
+              <button onClick={() => deleteFlashcard(deleteFlashcardId)}>Delete</button>
+              <button onClick={() => setShowDeletePopup(false)}>Cancel</button>
+            </div>
+          ) : deleteStatus === 'success' ? (
+            <div className='delete-popup-card-success'>
+            <p>Flashcard deleted successfully!</p>
+            </div>
+          ) : (
+            <div className='delete-popup-card-failed'>
+            <p>Failed to delete flashcard. Please try again.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
