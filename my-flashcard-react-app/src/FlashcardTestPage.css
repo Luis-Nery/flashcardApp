@@ -1,0 +1,116 @@
+/* Use a unique parent class selector to avoid global conflicts */
+.flashcard-test-page,
+.test-complete {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+/* Center the question card and constrain width */
+.flashcard-test-page .question-section,
+.test-complete .result-question {
+  width: 700px; /* Increased width for larger flashcard appearance */
+  height: 300px; /* Height for better flashcard proportions */
+  border: 2px solid #ddd;
+  padding: 30px;
+  margin-bottom: 40px;
+  border-radius: 30px; /* More rounded corners for a flashcard look */
+  background-color: #fefefe; /* Bright white for a clean flashcard feel */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.20); /* Stronger shadow for depth */
+  text-align: center; /* Center text inside flashcard */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertically center content */
+  align-items: center; /* Horizontally center content */
+}
+.flashcard-question{
+  font-size: 20px; /* Larger font size for better readability */
+  font-weight: bold; /* Bold text for emphasis */
+}
+
+/* Center options under the question, with two options per row */
+.flashcard-test-page .options-section,
+.test-complete .result-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two options per row */
+  gap: 10px; /* Spacing between options */
+  margin-top: 20px; /* Extra margin to separate from question */
+  justify-items: center; /* Center items within the grid */
+}
+
+/* Option styles */
+.flashcard-test-page .option,
+.test-complete .result-option {
+  padding: 15px 20px; /* Increased padding for larger buttons */
+  width: 200px; /* Consistent button size */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px; /* Larger font size for readability */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for better readability */
+.flashcard-test-page .option:hover {
+  background-color: #e8f4ff; /* Subtle light blue */
+  color: #000; /* Ensure text stays readable */
+}
+
+/* Selected option styling */
+.flashcard-test-page .option.selected {
+  background-color: #007bff;
+  color: #fff; /* White text for contrast */
+}
+
+/* Disable hover effect for test results */
+.test-complete .result-option {
+  cursor: default;
+}
+
+/* Correct answer styling */
+.test-complete .result-option.correct {
+  background-color: #d4edda; /* Light green for contrast */
+  color: #155724; /* Dark green text */
+  border-color: #28a745;
+}
+
+/* Incorrect answer styling */
+.test-complete .result-option.incorrect {
+  background-color: #f8d7da; /* Light red for contrast */
+  color: #721c24; /* Dark red text */
+  border-color: #dc3545;
+}
+
+/* Submit button styling */
+.flashcard-test-page .submit-button,
+.test-complete button {
+  display: block;
+  margin: 20px 0;
+  padding: 15px 25px; /* Larger button size for better usability */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px; /* Slightly larger font size */
+  transition: background-color 0.3s ease;
+}
+
+/* Enabled submit button styles */
+.flashcard-test-page .submit-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.flashcard-test-page .submit-button:hover:not([disabled]) {
+  background-color: #0056b3;
+}
+
+/* Disabled submit button styles */
+.flashcard-test-page .submit-button:disabled {
+  background-color: #ccc; /* Gray background */
+  color: #666; /* Dark gray text */
+  cursor: not-allowed; /* Indicate disabled state */
+}
