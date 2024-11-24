@@ -8,6 +8,7 @@ import Layout from './Layout';  // Import the new Layout component
 import FlashcardSetList from './FlashcardSetList';  // Import the FlashcardSetList component
 import CreateFlashcardSetPage from './CreateFlashcardSetPage.jsx';
 import Settings from './Settings.jsx';  // Import the Settings component
+import FlashcardTestPage from './FlashcardTestPage.jsx';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/flashcardSet/:setId" element={<FlashcardSetPage />} />  {/* New Route */}
           <Route path="/create" element={<CreateFlashcardSetPage />} />  {/* New Route for creating a set */}
           <Route path="/settings" element ={<Settings></Settings>}/>{/* New Route for settings */} 
+          <Route path="/test/:setId" element={<FlashcardTestPage />} />{/* New Route for taking a test */} 
         </Route>
       </Routes>
     </Router>

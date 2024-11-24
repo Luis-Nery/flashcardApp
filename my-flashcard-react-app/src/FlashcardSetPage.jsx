@@ -190,6 +190,10 @@ const FlashcardSetPage = () => {
   const handleCancelFlashcardEdit = () => {
     setEditingFlashcardId(null);
   };
+  
+  const handleNavigateToTest = () => {
+    navigate(`/test/${setId}`);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -220,6 +224,9 @@ const FlashcardSetPage = () => {
 
       <button className="sort-button" onClick={toggleSort}>
         {sortAlphabetically ? 'Sort by Default' : 'Sort Alphabetically'}
+      </button>
+      <button className="test-button" onClick={handleNavigateToTest}>
+          Start Test
       </button>
       {flashcards.map((flashcard) => (
         <div className="flashcard" key={flashcard.id}>
