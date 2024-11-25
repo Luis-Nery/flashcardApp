@@ -1,15 +1,116 @@
-/* Close button styling */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #eef2f5;
+}
+
+.auth-form {
+  position: relative;
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  text-align: center;
+}
+
 .close-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
-  .close-button:hover {
-    color: red;
-  }
-  
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #555;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+.auth-form h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.auth-input:focus {
+  outline: none;
+  border: 1px solid #5b9bd5;
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #5b9bd5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.auth-button:hover {
+  background-color: #4a90e2;
+}
+
+.auth-error {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.auth-switch {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.auth-switch span {
+  color: #4a90e2;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.google-signin-container {
+  margin-top: 15px;
+}
+
+.google-signin-button {
+  background-color: #4285f4;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.google-signin-button:hover {
+  background-color: #357ae8;
+}
+
+.loading-screen {
+  font-size: 18px;
+  text-align: center;
+  color: #555;
+}

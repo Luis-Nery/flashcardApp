@@ -37,15 +37,19 @@ public class UserController {
 
 			// Now you can use the UID and other data from the request body to create a user
 			// For example, if your User object has email and displayName fields
-			user.setId(uid); // Set the Firebase UID
 			// user.setEmail(decodedToken.getEmail()); // Optionally, you can set the email
 			// user.setDisplayName(decodedToken.getName()); // Optionally, set the display
 			// name
+			
+			Optional<User> existingUser = userRepository.findById(uid);
+			if (existingUser.isPresent()) {
+			    return ResponseEntity.ok(existingUser.get()); // Return the existing user without overwriting
+			} else {
+			    user.setId(uid);
+			    User savedUser = userRepository.save(user);
+			    return ResponseEntity.ok(savedUser);
+			}
 
-			// Save the user to the database
-			User savedUser = userRepository.save(user);
-
-			return ResponseEntity.ok(savedUser);
 		} catch (FirebaseAuthException e) {
 			// If the token is invalid or expired, return a 401 Unauthorized response
 			return ResponseEntity.status(401).body(null);
