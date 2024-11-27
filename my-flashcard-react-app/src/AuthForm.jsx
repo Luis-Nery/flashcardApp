@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   sendEmailVerification,
+  sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
   fetchSignInMethodsForEmail,
@@ -27,6 +28,7 @@ const AuthorizationForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [initializing, setInitializing] = useState(true);
+  const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -122,6 +124,20 @@ const AuthorizationForm = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setError('Password reset email sent successfully. Check your inbox.');
+    } catch (error) {
+      setError(`Failed to send reset email: ${error.message}`);
+    } finally {
+      setLoading(false);
+      setForgotPasswordMode(false);
+    }
+  };
+
   if (initializing) {
     return <div className="loading-screen">Loading...</div>;
   }
@@ -134,57 +150,101 @@ const AuthorizationForm = () => {
           <FaTimes />
         </button>
 
-        <h2>{isSignUp ? 'Create Your Account' : 'Welcome Back'}</h2>
-        {error && <p className="auth-error">{error}</p>}
-        <form onSubmit={isSignUp ? handleSignup : handleLogin}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="auth-input"
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="auth-input"
-            required
-          />
-          {isSignUp && (
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm Password"
-              className="auth-input"
-              required
-            />
-          )}
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Login'}
-          </button>
-        </form>
-        <p className="auth-switch">
-          {isSignUp ? (
-            <>
-              Already have an account?{' '}
-              <span onClick={() => navigate('/login')}>Log in</span>
-            </>
-          ) : (
-            <>
-              Don't have an account?{' '}
-              <span onClick={() => navigate('/signup')}>Sign up</span>
-            </>
-          )}
-        </p>
-        <div className="google-signin-container">
-          <button onClick={handleGoogleSignIn} className="google-signin-button">
-            Sign in with Google
-          </button>
-        </div>
+        {forgotPasswordMode ? (
+          <>
+            <h2>Reset Your Password</h2>
+            {error && <p className="auth-error">{error}</p>}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleForgotPassword();
+              }}
+            >
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="auth-input"
+                required
+              />
+              <button type="submit" className="auth-button" disabled={loading}>
+                {loading ? 'Sending...' : 'Send Reset Email'}
+              </button>
+            </form>
+            <p
+              className="auth-switch"
+              onClick={() => setForgotPasswordMode(false)}
+            >
+              Back to Login
+            </p>
+          </>
+        ) : (
+          <>
+            <h2>{isSignUp ? 'Create Your Account' : 'Welcome Back'}</h2>
+            {error && <p className="auth-error">{error}</p>}
+            <form onSubmit={isSignUp ? handleSignup : handleLogin}>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="auth-input"
+                required
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="auth-input"
+                required
+              />
+              {isSignUp && (
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm Password"
+                  className="auth-input"
+                  required
+                />
+              )}
+              <button type="submit" className="auth-button" disabled={loading}>
+                {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Login'}
+              </button>
+            </form>
+            <p className="auth-switch">
+              {isSignUp ? (
+                <>
+                  Already have an account?{' '}
+                  <span onClick={() => navigate('/login')}>Log in</span>
+                </>
+              ) : (
+                <>
+                  Don't have an account?{' '}
+                  <span onClick={() => navigate('/signup')}>Sign up</span>
+                </>
+              )}
+            </p>
+            <p className="auth-switch">
+              Forgot your password?{' '}
+              <span
+                onClick={() => setForgotPasswordMode(true)}
+              >
+                Reset Password
+              </span>
+            </p>
+            <div className="google-signin-container">
+              <button
+                onClick={handleGoogleSignIn}
+                className="google-signin-button"
+              >
+                Sign in with Google
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
