@@ -1,78 +1,144 @@
+/* Navbar Styling */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #2a9d8f;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(to right, #0056a3, #003f8c); /* Darker blue gradient */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Slightly more prominent shadow */
+}
+
+.navbar-title {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.navbar-title:hover {
+  color: #ff6347; /* Softer orange tone for hover */
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* Create Button */
+.create-button {
+  background-color: #ffffff;
+  color: #0056a3; /* Matches the navbar blue */
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-button:hover {
+  background-color: #0056a3; /* Matches darker gradient color */
+  color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Profile Container */
+.profile-container {
+  position: relative;
+}
+
+.hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.hamburger-icon:hover {
+  transform: scale(1.1);
+}
+
+.hamburger-icon span {
+  display: block;
+  height: 3px;
+  background-color: #ffffff;
+  border-radius: 2px;
+  transition: background-color 0.3s ease;
+}
+
+.hamburger-icon span:hover {
+  background-color: #ff6347; /* Softer orange tone */
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 160px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Slightly darker shadow */
+  overflow: hidden;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  background: none;
+  border: none;
+  text-align: left;
+  color: #0056a3; /* Matches navbar blue */
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu button:hover {
+  background-color: #d6e9ff; /* Lighter blue hover */
+  color: #003f8c; /* Matches darker gradient */
+}
+
+/* Dropdown Menu Divider */
+.dropdown-menu button + button {
+  border-top: 1px solid #eee;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
+
   .navbar-title {
-    color: #ffffff;
-    font-size: 1.5rem;
+    margin-bottom: 1rem;
   }
-  
+
   .navbar-actions {
-    display: flex;
-    align-items: center;
-  }
-  
-  .create-button {
-    background-color: #e76f51;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-right: 1rem;
-    transition: background-color 0.3s ease;
-  }
-  
-  .create-button:hover {
-    background-color: #d45d42;
-  }
-  
-  .profile-container {
-    position: relative;
-  }
-  
-  .profile-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #264653;
-    color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-    cursor: pointer;
-  }
-  
-  .dropdown-menu {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 120px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    z-index: 1000;
-  }
-  
-  .dropdown-menu button {
     width: 100%;
-    padding: 0.8rem;
-    background: none;
-    border: none;
-    text-align: left;
-    color: #333;
-    cursor: pointer;
+    justify-content: space-between;
   }
-  
-  .dropdown-menu button:hover {
-    background-color: #f0f0f0;
+
+  .create-button {
+    margin-right: 0;
+    width: 100%;
+    text-align: center;
   }
-  
+
+  .dropdown-menu {
+    right: auto;
+    left: 0;
+    width: 100%;
+  }
+}
