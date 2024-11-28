@@ -143,6 +143,34 @@ public class UserController {
 		Optional<User> user = userRepository.findById(id);
 		return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}
+	
+	// Check if a user exists
+	@GetMapping("/checkIfUserExists")
+	public ResponseEntity<User> checkIfUserExists(@RequestHeader("Authorization") String token) {
+	    try {
+	        // Extract and verify the Firebase ID token from the Authorization header
+	        String idToken = token.replace("Bearer ", "");
+	        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+	        String uid = decodedToken.getUid(); // Get UID from Firebase
+
+	        // Check if user exists in the database
+	        Optional<User> userOptional = userRepository.findById(uid);
+
+	        if (userOptional.isPresent()) {
+	            return ResponseEntity.ok(userOptional.get()); // Return user details if found
+	        } else {
+	            return ResponseEntity.notFound().build(); // Return 404 if user does not exist
+	        }
+	    } catch (FirebaseAuthException e) {
+	        // Handle invalid or expired Firebase token
+	        return ResponseEntity.status(401).body(null); // Unauthorized
+	    } catch (Exception e) {
+	        // Handle other exceptions
+	        e.printStackTrace();
+	        return ResponseEntity.status(500).body(null); // Internal Server Error
+	    }
+	}
+
 
 	// Get all sets of a User
 	@GetMapping("/{userId}/flashcardSets")

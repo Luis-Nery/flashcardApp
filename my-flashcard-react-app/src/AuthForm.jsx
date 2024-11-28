@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   sendEmailVerification,
+  sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
   fetchSignInMethodsForEmail,
@@ -27,6 +28,7 @@ const AuthorizationForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [initializing, setInitializing] = useState(true);
+  const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -71,6 +73,9 @@ const AuthorizationForm = () => {
       await sendUserTokenToBackend(idToken, newUser.email);
       setUser(newUser);
       await sendEmailVerification(newUser);
+
+      // Navigate to /create after signup
+      navigate('/create');
     } catch (error) {
       setError(`Signup failed: ${error.message}`);
     } finally {
@@ -94,31 +99,60 @@ const AuthorizationForm = () => {
     }
   };
 
+  const checkIfUserExists = async (idToken) => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/users/checkIfUserExists', {
+        headers: {
+          Authorization: `Bearer ${idToken}`, // Include the token in the Authorization header
+        },
+      });
+      return response.data; // Return the user data if found
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return null; // User does not exist
+      }
+      console.error('Error checking user existence:', error);
+      throw error; // Rethrow for further handling
+    }
+  };
+  
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({
-      prompt: 'select_account', // Forces Google to show the account chooser popup
-    });
-
+    provider.setCustomParameters({ prompt: 'select_account' });
+  
     try {
       const result = await signInWithPopup(auth, provider);
       const newUser = result.user;
-
-      // Check if there is an existing account for the email
-      const email = newUser.email;
-      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-
-      if (signInMethods.length > 0 && !signInMethods.includes('google.com')) {
-        // Link the Google account to the existing email/password account
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        await linkWithCredential(auth.currentUser, credential);
-      }
-
+  
       const idToken = await newUser.getIdToken();
-      await sendUserTokenToBackend(idToken, email);
+  
+      // Check if the user exists in the backend
+      const userExists = await checkIfUserExists(idToken);
+  
+      // Send the user token to the backend for further processing
+      await sendUserTokenToBackend(idToken, newUser.email);
+  
       setUser(newUser);
+  
+      // Redirect based on whether the user exists
+      navigate(userExists ? '/flashcardSetList' : '/create');
     } catch (error) {
       setError(`Google sign-in failed: ${error.message}`);
+    }
+  };
+  
+
+  const handleForgotPassword = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setError('Password reset email sent successfully. Check your inbox.');
+    } catch (error) {
+      setError(`Failed to send reset email: ${error.message}`);
+    } finally {
+      setLoading(false);
+      setForgotPasswordMode(false);
     }
   };
 
@@ -134,57 +168,101 @@ const AuthorizationForm = () => {
           <FaTimes />
         </button>
 
-        <h2>{isSignUp ? 'Create Your Account' : 'Welcome Back'}</h2>
-        {error && <p className="auth-error">{error}</p>}
-        <form onSubmit={isSignUp ? handleSignup : handleLogin}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="auth-input"
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="auth-input"
-            required
-          />
-          {isSignUp && (
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm Password"
-              className="auth-input"
-              required
-            />
-          )}
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Login'}
-          </button>
-        </form>
-        <p className="auth-switch">
-          {isSignUp ? (
-            <>
-              Already have an account?{' '}
-              <span onClick={() => navigate('/login')}>Log in</span>
-            </>
-          ) : (
-            <>
-              Don't have an account?{' '}
-              <span onClick={() => navigate('/signup')}>Sign up</span>
-            </>
-          )}
-        </p>
-        <div className="google-signin-container">
-          <button onClick={handleGoogleSignIn} className="google-signin-button">
-            Sign in with Google
-          </button>
-        </div>
+        {forgotPasswordMode ? (
+          <>
+            <h2>Reset Your Password</h2>
+            {error && <p className="auth-error">{error}</p>}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleForgotPassword();
+              }}
+            >
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="auth-input"
+                required
+              />
+              <button type="submit" className="auth-button" disabled={loading}>
+                {loading ? 'Sending...' : 'Send Reset Email'}
+              </button>
+            </form>
+            <p
+              className="auth-switch"
+              onClick={() => setForgotPasswordMode(false)}
+            >
+              Back to Login
+            </p>
+          </>
+        ) : (
+          <>
+            <h2>{isSignUp ? 'Create Your Account' : 'Welcome Back'}</h2>
+            {error && <p className="auth-error">{error}</p>}
+            <form onSubmit={isSignUp ? handleSignup : handleLogin}>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="auth-input"
+                required
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="auth-input"
+                required
+              />
+              {isSignUp && (
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm Password"
+                  className="auth-input"
+                  required
+                />
+              )}
+              <button type="submit" className="auth-button" disabled={loading}>
+                {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Login'}
+              </button>
+            </form>
+            <p className="auth-switch">
+              {isSignUp ? (
+                <>
+                  Already have an account?{' '}
+                  <span onClick={() => navigate('/login')}>Log in</span>
+                </>
+              ) : (
+                <>
+                  Don't have an account?{' '}
+                  <span onClick={() => navigate('/signup')}>Sign up</span>
+                </>
+              )}
+            </p>
+            <p className="auth-switch">
+              Forgot your password?{' '}
+              <span
+                onClick={() => setForgotPasswordMode(true)}
+              >
+                Reset Password
+              </span>
+            </p>
+            <div className="google-signin-container">
+              <button
+                onClick={handleGoogleSignIn}
+                className="google-signin-button"
+              >
+                Sign in with Google
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
