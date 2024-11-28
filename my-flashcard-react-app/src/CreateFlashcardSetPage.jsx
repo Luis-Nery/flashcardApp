@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { auth } from './firebaseConfiguration';
 import './CreateFlashcardSetPage.css';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+
 
 const CreateFlashcardSetPage = ({ userId }) => {
+  const navigate = useNavigate(); // Initialize useNavigate hook
   const [title, setTitle] = useState('');
   const [flashcards, setFlashcards] = useState([{ question: '', answer: '' }]);
   const [error, setError] = useState('');
@@ -28,12 +31,12 @@ const CreateFlashcardSetPage = ({ userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const user = auth.currentUser;
       if (user) {
         const token = await user.getIdToken();
-
+  
         // API call to create a new flashcard set
         const response = await axios.post(
           `http://localhost:8080/api/users/${userId}/flashcardSets/create`,
@@ -43,10 +46,15 @@ const CreateFlashcardSetPage = ({ userId }) => {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-
-        setSuccessMessage('Flashcard set created successfully!');
+  
         setTitle('');
         setFlashcards([{ question: '', answer: '' }]);
+        setSuccessMessage('Flashcard set created successfully!');
+  
+        // Wait 2-3 seconds before redirecting
+        setTimeout(() => {
+          navigate('/flashcardSetList');
+        }, 1500); // 1500ms = 1.5 seconds
       } else {
         setError('User is not authenticated');
       }
@@ -55,6 +63,7 @@ const CreateFlashcardSetPage = ({ userId }) => {
       setError('Failed to create flashcard set');
     }
   };
+  
 
   const handleTextareaResize = (e) => {
     const textarea = e.target;
