@@ -1,144 +1,190 @@
 /* Navbar Styling */
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: linear-gradient(to right, #0056a3, #003f8c); /* Darker blue gradient */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Slightly more prominent shadow */
+  display: flex; 
+  /* Creates a flexible layout for aligning child elements horizontally. */
+  justify-content: space-between; 
+  /* Distributes space between navbar items. */
+  align-items: center; 
+  /* Vertically centers items within the navbar. */
+  padding: 1rem 2rem; 
+  /* Adds space inside the navbar for breathing room. */
+  background: linear-gradient(to right, #0056a3, #003f8c); 
+  /* Creates a dark blue gradient background. */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+  /* Adds a subtle shadow for depth. */
 }
 
 .navbar-title {
-  color: #ffffff;
-  font-size: 1.8rem;
-  font-weight: bold;
-  text-decoration: none;
-  transition: color 0.3s ease;
+  color: #ffffff; 
+  /* Sets the navbar title text to white. */
+  font-size: 1.8rem; 
+  /* Increases the title font size. */
+  font-weight: bold; 
+  /* Makes the title text bold. */
+  text-decoration: none; 
+  /* Removes underline from links. */
+  transition: color 0.3s ease; 
+  /* Smooth transition when changing colors. */
 }
 
 .navbar-title:hover {
-  color: #ff6347; /* Softer orange tone for hover */
+  color: #ff6347; 
+  /* Changes text color to a soft orange on hover. */
 }
 
 .navbar-actions {
-  display: flex;
-  align-items: center;
+  display: flex; 
+  /* Aligns the action buttons horizontally. */
+  align-items: center; 
+  /* Vertically centers the buttons. */
 }
 
 /* Create Button */
 .create-button {
-  background-color: #ffffff;
-  color: #0056a3; /* Matches the navbar blue */
-  border: 1px solid #ffffff;
-  border-radius: 5px;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-right: 1rem;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #ffffff; 
+  /* Sets button background to white. */
+  color: #0056a3; 
+  /* Matches button text color to the navbar blue. */
+  border: 1px solid #ffffff; 
+  /* Adds a white border. */
+  border-radius: 5px; 
+  /* Slightly rounds button corners. */
+  padding: 0.6rem 1.2rem; 
+  /* Adds spacing inside the button. */
+  font-size: 1rem; 
+  /* Sets button text size. */
+  font-weight: bold; 
+  /* Makes the button text bold. */
+  cursor: pointer; 
+  /* Changes the cursor to a pointer on hover. */
+  margin-right: 1rem; 
+  /* Adds spacing to the right. */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+  /* Smooth transition for background and shadow changes. */
 }
 
 .create-button:hover {
-  background-color: #0056a3; /* Matches darker gradient color */
-  color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background-color: #0056a3; 
+  /* Changes background to match the navbar on hover. */
+  color: #ffffff; 
+  /* Inverts text color to white on hover. */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+  /* Enhances shadow for a hover effect. */
 }
 
 /* Profile Container */
 .profile-container {
-  position: relative;
+  position: relative; 
+  /* Allows absolute positioning of dropdown within this container. */
 }
 
 .hamburger-icon {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 30px;
-  height: 20px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
+  display: flex; 
+  /* Arranges bars in a column layout. */
+  flex-direction: column; 
+  justify-content: space-between; 
+  /* Evenly spaces bars vertically. */
+  width: 30px; 
+  height: 20px; 
+  cursor: pointer; 
+  transition: transform 0.3s ease; 
+  /* Adds smooth scaling transition. */
 }
 
 .hamburger-icon:hover {
-  transform: scale(1.1);
+  transform: scale(1.1); 
+  /* Slightly enlarges icon on hover. */
 }
 
 .hamburger-icon span {
-  display: block;
-  height: 3px;
-  background-color: #ffffff;
-  border-radius: 2px;
-  transition: background-color 0.3s ease;
+  display: block; 
+  height: 3px; 
+  background-color: #ffffff; 
+  /* Sets bar color to white. */
+  border-radius: 2px; 
+  transition: background-color 0.3s ease; 
+  /* Smooth transition for color changes. */
 }
 
 .hamburger-icon span:hover {
-  background-color: #ff6347; /* Softer orange tone */
+  background-color: #ff6347; 
+  /* Changes bar color to soft orange on hover. */
 }
 
 /* Dropdown Menu */
 .dropdown-menu {
-  position: absolute;
-  top: 60px;
-  right: 0;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 160px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Slightly darker shadow */
-  overflow: hidden;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
+  position: absolute; 
+  /* Positions the menu relative to the profile container. */
+  top: 60px; 
+  right: 0; 
+  background-color: #ffffff; 
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
+  width: 160px; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+  /* Adds a shadow for depth. */
+  overflow: hidden; 
+  z-index: 1000; 
+  /* Ensures the menu is above other elements. */
+  animation: fadeIn 0.3s ease; 
+  /* Fades the menu in smoothly. */
 }
 
 .dropdown-menu button {
-  width: 100%;
-  padding: 0.8rem 1.2rem;
-  background: none;
-  border: none;
-  text-align: left;
-  color: #0056a3; /* Matches navbar blue */
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  width: 100%; 
+  padding: 0.8rem 1.2rem; 
+  background: none; 
+  border: none; 
+  text-align: left; 
+  color: #0056a3; 
+  font-size: 1rem; 
+  font-weight: bold; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease, color 0.3s ease; 
 }
 
 .dropdown-menu button:hover {
-  background-color: #d6e9ff; /* Lighter blue hover */
-  color: #003f8c; /* Matches darker gradient */
+  background-color: #d6e9ff; 
+  /* Lighter blue on hover. */
+  color: #003f8c; 
+  /* Matches navbar's darker blue on hover. */
 }
 
 /* Dropdown Menu Divider */
 .dropdown-menu button + button {
-  border-top: 1px solid #eee;
+  border-top: 1px solid #eee; 
+  /* Adds a light divider between buttons. */
 }
 
 /* Responsive Styling */
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: column; 
+    /* Stacks elements vertically for smaller screens. */
+    align-items: flex-start; 
+    /* Aligns items to the left. */
   }
 
   .navbar-title {
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; 
+    /* Adds space below the title. */
   }
 
   .navbar-actions {
-    width: 100%;
-    justify-content: space-between;
+    width: 100%; 
+    justify-content: space-between; 
   }
 
   .create-button {
-    margin-right: 0;
-    width: 100%;
-    text-align: center;
+    margin-right: 0; 
+    width: 100%; 
+    text-align: center; 
   }
 
   .dropdown-menu {
-    right: auto;
-    left: 0;
-    width: 100%;
+    right: auto; 
+    left: 0; 
+    width: 100%; 
+    /* Expands dropdown to full width on small screens. */
   }
 }
