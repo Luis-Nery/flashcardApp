@@ -1,116 +1,128 @@
+/* Global Styles */
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
-  margin: 0;
-  padding: 0;
+  font-family: 'Arial', sans-serif; /* Sets a clean and readable font for the application. */
+  background-color: #f5f5f5; /* Light background for a soft and neutral look. */
+  margin: 0; /* Removes default browser margin. */
+  padding: 0; /* Removes default browser padding. */
 }
 
+/* Container for Authentication Forms */
 .auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #eef2f5;
+  display: flex; /* Enables flexbox for centering child elements. */
+  justify-content: center; /* Horizontally centers content. */
+  align-items: center; /* Vertically centers content. */
+  height: 100vh; /* Full viewport height to center content. */
+  background-color: #eef2f5; /* Subtle background for contrast with the form. */
 }
 
+/* Styles for the Authentication Form */
 .auth-form {
-  position: relative;
-  background: white;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 400px;
-  text-align: center;
+  position: relative; /* Allows positioning of child elements like the close button. */
+  background: white; /* White background for clarity and focus. */
+  padding: 40px; /* Adds inner spacing within the form. */
+  border-radius: 10px; /* Smoothens corners for a modern look. */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth. */
+  width: 400px; /* Fixed width for consistent form size. */
+  text-align: center; /* Centers text and form elements. */
 }
 
+/* Close Button for the Authentication Form */
 .close-button {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #555;
+  position: absolute; /* Positions the button relative to the form. */
+  top: 15px; /* Distance from the top edge. */
+  right: 15px; /* Distance from the right edge. */
+  background: none; /* No background for a clean look. */
+  border: none; /* Removes button border. */
+  font-size: 20px; /* Increases size for visibility. */
+  cursor: pointer; /* Pointer cursor to indicate interactivity. */
+  color: #555; /* Neutral color for the button. */
 }
 
 .close-button:hover {
-  color: #000;
+  color: #000; /* Darker color on hover for visual feedback. */
 }
 
+/* Form Heading */
 .auth-form h2 {
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 20px; /* Space below the heading for separation. */
+  color: #333; /* Dark color for readability. */
 }
 
+/* Input Fields for Authentication */
 .auth-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-sizing: border-box;
+  width: 100%; /* Makes the input fields stretch to full width. */
+  padding: 10px; /* Inner padding for better usability. */
+  margin: 10px 0; /* Adds space between inputs. */
+  border: 1px solid #ddd; /* Light border for subtle separation. */
+  border-radius: 5px; /* Rounded corners for a modern style. */
+  box-sizing: border-box; /* Includes padding and border in width/height. */
 }
 
 .auth-input:focus {
-  outline: none;
-  border: 1px solid #5b9bd5;
+  outline: none; /* Removes default focus outline. */
+  border: 1px solid #5b9bd5; /* Highlights the input on focus. */
 }
 
+/* Submit Button for the Form */
 .auth-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #5b9bd5;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  margin: 10px 0;
+  width: 100%; /* Full width for consistency. */
+  padding: 12px; /* Adequate padding for click area. */
+  background-color: #5b9bd5; /* Primary color for the button. */
+  color: white; /* White text for contrast. */
+  border: none; /* Removes default border. */
+  border-radius: 5px; /* Rounded edges for style. */
+  font-size: 16px; /* Larger font for readability. */
+  cursor: pointer; /* Pointer cursor for interactivity. */
+  margin: 10px 0; /* Space above and below the button. */
 }
 
 .auth-button:hover {
-  background-color: #4a90e2;
+  background-color: #4a90e2; /* Slightly darker blue for hover feedback. */
 }
 
+/* Error Message Styling */
 .auth-error {
-  color: red;
-  font-size: 14px;
-  margin-bottom: 15px;
+  color: red; /* Red color to indicate errors. */
+  font-size: 14px; /* Small text for concise messages. */
+  margin-bottom: 15px; /* Space below the error message. */
 }
 
+/* Switch Link for Authentication Modes (e.g., Login/Signup) */
 .auth-switch {
-  margin-top: 15px;
-  font-size: 14px;
-  color: #555;
+  margin-top: 15px; /* Adds space above the switch text. */
+  font-size: 14px; /* Smaller text for secondary information. */
+  color: #555; /* Neutral color for the text. */
 }
 
 .auth-switch span {
-  color: #4a90e2;
-  cursor: pointer;
-  text-decoration: underline;
+  color: #4a90e2; /* Highlighted color for the interactive link. */
+  cursor: pointer; /* Indicates interactivity. */
+  text-decoration: underline; /* Underline to signify a clickable link. */
 }
 
+/* Google Sign-In Button Container */
 .google-signin-container {
-  margin-top: 15px;
+  margin-top: 15px; /* Adds space above the container. */
 }
 
+/* Google Sign-In Button */
 .google-signin-button {
-  background-color: #4285f4;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
+  background-color: #4285f4; /* Google's primary blue color. */
+  color: white; /* White text for contrast. */
+  padding: 10px; /* Padding for click area. */
+  border: none; /* Removes default border. */
+  border-radius: 5px; /* Rounded edges for a consistent look. */
+  cursor: pointer; /* Pointer cursor for interactivity. */
+  width: 100%; /* Full width to match the form. */
 }
 
 .google-signin-button:hover {
-  background-color: #357ae8;
+  background-color: #357ae8; /* Darker blue for hover feedback. */
 }
 
+/* Loading Screen Message */
 .loading-screen {
-  font-size: 18px;
-  text-align: center;
-  color: #555;
+  font-size: 18px; /* Larger font for visibility. */
+  text-align: center; /* Centers the text horizontally. */
+  color: #555; /* Neutral color for the message. */
 }

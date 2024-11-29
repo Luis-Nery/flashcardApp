@@ -1,213 +1,215 @@
 /* Container styling */
 .flashcard-set-list-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: 800px; /* Limits the container width to a maximum of 800px for a neat layout */
+  margin: 0 auto; /* Centers the container horizontally */
+  padding: 20px; /* Adds spacing inside the container */
 }
 
 .flashcard-set-list-container h2 {
-  text-align: center;
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 20px;
+  text-align: center; /* Centers the heading text */
+  font-size: 2rem; /* Sets a larger font size for prominence */
+  color: #333; /* Uses a dark gray color for readability */
+  margin-bottom: 20px; /* Adds spacing below the heading */
 }
 
 /* Flashcard set item styling */
 .flashcard-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  margin: 15px 0;
-  background-color: #f7f9fc;
-  border: 1px solid #e0e4e8;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  position: relative;
+  display: flex; /* Enables flexbox for alignment */
+  justify-content: space-between; /* Spreads child elements (title and delete button) apart */
+  align-items: center; /* Vertically centers child elements */
+  padding: 15px 20px; /* Adds inner spacing to the card */
+  margin: 15px 0; /* Adds vertical spacing between cards */
+  background-color: #f7f9fc; /* Light background for contrast */
+  border: 1px solid #e0e4e8; /* Subtle border for definition */
+  border-radius: 8px; /* Rounds the corners of the card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
+  position: relative; /* Allows positioning of child elements like delete button */
 }
 
 .flashcard-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  transform: translateY(-3px); /* Slight lift effect on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Darker shadow for emphasis */
+  cursor: pointer; /* Indicates interactivity */
 }
 
 .flashcard-title {
-  font-size: 1.2rem;
-  font-weight: 500;
-  flex-grow: 1; /* Ensures title takes available space */
-  margin-right: 10px;
-  color: black; /* Set name in red */
+  font-size: 1.2rem; /* Medium-sized font for the title */
+  font-weight: 500; /* Slightly bold for emphasis */
+  flex-grow: 1; /* Ensures title takes up available space */
+  margin-right: 10px; /* Adds spacing to the right of the title */
+  color: black; /* Sets the title color */
 }
 
 /* Delete button styling */
 .delete-button {
-  background: none;
-  border: none;
-  color: red;
-  cursor: pointer;
-  font-size: 1.2em;
-  transition: color 0.2s;
-  z-index: 2; /* Ensure it is above the clickable background */
+  background: none; /* Removes default button background */
+  border: none; /* Removes default button border */
+  color: red; /* Red color to signify a destructive action */
+  cursor: pointer; /* Indicates interactivity */
+  font-size: 1.2em; /* Slightly larger size for visibility */
+  transition: color 0.2s; /* Smooth color transition on hover */
+  z-index: 2; /* Ensures the button stays above overlapping elements */
 }
 
 .delete-button:hover {
-  color: darkred;
+  color: darkred; /* Darker red on hover for emphasis */
 }
 
 /* Prevent interaction with trashcan icons when popup is active */
 .disable-pointer-events .delete-button {
-  pointer-events: none; /* Disable clicking */
-  opacity: 0.5; /* Optionally, reduce opacity to indicate it's disabled */
+  pointer-events: none; /* Disables clicks on the delete button */
+  opacity: 0.5; /* Reduces visibility to indicate it's inactive */
 }
 
 /* Popup container and background overlay */
 .delete-popup {
-  position: fixed;
+  position: fixed; /* Ensures popup stays in place on the screen */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: auto; /* Ensure popup is interactive */
-  z-index: 3; /* Popup should be above trashcan icons */
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for overlay */
+  display: flex; /* Centers the popup using flexbox */
+  justify-content: center; /* Horizontally centers popup content */
+  align-items: center; /* Vertically centers popup content */
+  pointer-events: auto; /* Ensures the popup itself is interactive */
+  z-index: 3; /* Places the popup above all other elements */
 }
 
 .popup-overlay {
-  position: fixed;
+  position: fixed; /* Covers the entire screen */
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1; /* Blocks interaction with elements below */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1; /* Sits above the main content but below the popup content */
 }
 
 .popup-content {
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  text-align: center;
-  width: 90%;
-  max-width: 600px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  z-index: 2;
+  background: white; /* White background for the popup box */
+  padding: 30px; /* Spacing inside the popup */
+  border-radius: 8px; /* Rounds the corners */
+  text-align: center; /* Centers the content inside the popup */
+  width: 90%; /* Popup width relative to the viewport */
+  max-width: 600px; /* Maximum width to prevent overly large popups */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Adds a shadow for depth */
+  z-index: 2; /* Ensures content is above the overlay */
 }
 
 .popup-content h3 {
-  color: #333;
-  font-weight: bold;
-  margin-bottom: 15px;
+  color: #333; /* Dark gray color for the heading */
+  font-weight: bold; /* Bold heading for emphasis */
+  margin-bottom: 15px; /* Spacing below the heading */
 }
 
 .popup-content p {
-  margin-bottom: 20px;
-  font-size: 1rem;
-  color: #555;
-  line-height: 1.6;
+  margin-bottom: 20px; /* Adds spacing below the paragraph */
+  font-size: 1rem; /* Standard font size for readability */
+  color: #555; /* Medium gray color for less contrast */
+  line-height: 1.6; /* Increases line spacing for better readability */
 }
+
 
 /* Input field inside popup */
 .popup-content input {
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
-  box-sizing: border-box; /* Ensure padding doesn't affect the width */
-  font-size: 1rem;
-  margin-bottom: 20px; /* Space between the input and buttons */
+  padding: 10px; /* Adds inner spacing for better usability */
+  margin-top: 10px; /* Space above the input field */
+  border: 1px solid #ccc; /* Light gray border for definition */
+  border-radius: 5px; /* Rounded corners for a modern look */
+  width: 100%; /* Full width of the parent container */
+  box-sizing: border-box; /* Ensures padding doesn't increase the overall width */
+  font-size: 1rem; /* Standard font size for readability */
+  margin-bottom: 20px; /* Space below the input field */
 }
 
 /* Success message styling */
 .delete-success-message {
-  color: green;
-  font-size: 1rem;
-  font-weight: bold;
-  margin-top: 20px;
-  text-align: center;
+  color: green; /* Green color to indicate success */
+  font-size: 1rem; /* Standard font size */
+  font-weight: bold; /* Bold text for emphasis */
+  margin-top: 20px; /* Space above the success message */
+  text-align: center; /* Centers the message horizontally */
 }
 
 /* Popup actions */
 .popup-actions button {
-  margin: 5px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
+  margin: 5px; /* Space between buttons */
+  padding: 10px 15px; /* Adds inner spacing for a balanced appearance */
+  border: none; /* Removes default border */
+  border-radius: 5px; /* Rounded corners for a modern look */
+  cursor: pointer; /* Pointer cursor for interactivity */
+  font-size: 0.9rem; /* Slightly smaller font for buttons */
 }
 
 .popup-actions button:first-child {
-  background-color: gray;
-  color: white;
-  transition: background-color 0.2s;
+  background-color: gray; /* Neutral background for the cancel button */
+  color: white; /* White text for contrast */
+  transition: background-color 0.2s; /* Smooth background color change on hover */
 }
 
 .popup-actions button:first-child:hover {
-  background-color: #555;
+  background-color: #555; /* Darker gray on hover for emphasis */
 }
 
 .popup-actions button:last-child {
-  background-color: red;
-  color: white;
-  transition: background-color 0.2s;
+  background-color: red; /* Red background for the delete button to indicate danger */
+  color: white; /* White text for contrast */
+  transition: background-color 0.2s; /* Smooth background color change on hover */
 }
 
 .popup-actions button:last-child:hover {
-  background-color: darkred;
+  background-color: darkred; /* Darker red on hover for emphasis */
 }
 
 /* Responsive design */
 @media (max-width: 600px) {
   .flashcard-set-list-container {
-    padding: 10px;
+    padding: 10px; /* Reduces padding for smaller screens */
   }
 
   .flashcard-item {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: column; /* Stacks items vertically */
+    align-items: flex-start; /* Aligns items to the left */
   }
 
   .flashcard-title {
-    margin-bottom: 10px;
-    font-size: 1rem;
+    margin-bottom: 10px; /* Space below the title */
+    font-size: 1rem; /* Reduces font size for smaller screens */
   }
 
   .delete-button {
-    align-self: flex-end;
+    align-self: flex-end; /* Positions the delete button to the right */
   }
 
   .popup-content {
-    width: 95%;
+    width: 95%; /* Almost full width of the screen */
   }
 }
+
 /* Success message styling */
 .delete-success-message {
-  color: green;
-  font-size: 1rem;
-  font-weight: bold;
-  margin-top: 20px;
-  text-align: center;
-  animation: fadeInOut 2s forwards;
+  color: green; /* Green color to indicate success */
+  font-size: 1rem; /* Standard font size */
+  font-weight: bold; /* Bold text for emphasis */
+  margin-top: 20px; /* Space above the success message */
+  text-align: center; /* Centers the message horizontally */
+  animation: fadeInOut 2s forwards; /* Applies a fade-in-out animation */
 }
 
 /* Animation for success message fade out */
 @keyframes fadeInOut {
   0% {
-    opacity: 0;
+    opacity: 0; /* Starts fully transparent */
   }
   20% {
-    opacity: 1;
+    opacity: 1; /* Fades in */
   }
   80% {
-    opacity: 1;
+    opacity: 1; /* Remains visible */
   }
   100% {
-    opacity: 0;
+    opacity: 0; /* Fades out */
   }
 }

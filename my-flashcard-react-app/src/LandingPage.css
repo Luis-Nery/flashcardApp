@@ -1,187 +1,187 @@
-.landing-page {
-  font-family: 'Arial', sans-serif;
-  color: #333;
-  margin: 0;
-  padding: 0;
+.landing-page { 
+  font-family: 'Arial', sans-serif; /* Use a clean, modern font for the entire landing page. */
+  color: #333; /* Set a standard text color for readability. */
+  margin: 0; /* Remove default margin to ensure full-width layout. */
+  padding: 0; /* Remove default padding for consistency. */
 }
 
 /* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background: linear-gradient(to right, #007bff, #0056b3);
-  border-bottom: 1px solid #ddd;
-  color: white;
+.header { 
+  display: flex; /* Use flexbox for a responsive layout. */
+  justify-content: space-between; /* Distribute space evenly between child elements. */
+  align-items: center; /* Align items vertically in the center. */
+  padding: 20px; /* Add spacing around the header for better layout. */
+  background: linear-gradient(to right, #007bff, #0056b3); /* Apply a gradient for a visually appealing background. */
+  border-bottom: 1px solid #ddd; /* Add a subtle bottom border for separation. */
+  color: white; /* Ensure text contrasts well with the dark background. */
 }
 
-.header .logo h1 {
-  font-size: 2rem;
-  color: #fff;
+.header .logo h1 { 
+  font-size: 2rem; /* Set a large font size for prominence. */
+  color: #fff; /* Match logo color with the header text. */
 }
 
-.header .navigation ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
+.header .navigation ul { 
+  list-style: none; /* Remove default bullet points from the navigation list. */
+  display: flex; /* Use flexbox for horizontal layout. */
+  gap: 20px; /* Add space between navigation items. */
+  margin: 0; /* Reset margin to align properly within the header. */
+  padding: 0; /* Reset padding for consistency. */
 }
 
-.header .navigation li {
-  display: inline-block;
+.header .navigation li { 
+  display: inline-block; /* Ensure list items are displayed inline. */
 }
 
-.header .navigation .login-button a,
-.header .navigation .signup-button a {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+.header .navigation .login-button a, 
+.header .navigation .signup-button a { 
+  display: inline-block; /* Make buttons inline-block for proper sizing. */
+  padding: 10px 20px; /* Add padding for better clickability. */
+  font-size: 1rem; /* Set a readable font size. */
+  font-weight: bold; /* Emphasize text weight for visibility. */
+  text-decoration: none; /* Remove underline for cleaner design. */
+  border-radius: 5px; /* Round corners for modern aesthetics. */
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for hover effects. */
 }
 
-.header .navigation .login-button a {
-  background-color: #fff;
-  color: #007bff;
-  border: 1px solid #fff;
+.header .navigation .login-button a { 
+  background-color: #fff; /* White background for login button. */
+  color: #007bff; /* Match text color with the header's primary color. */
+  border: 1px solid #fff; /* Add a border for emphasis. */
 }
 
-.header .navigation .login-button a:hover {
-  background-color: #007bff;
-  color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+.header .navigation .login-button a:hover { 
+  background-color: #007bff; /* Invert colors on hover for emphasis. */
+  color: #fff; /* Ensure text remains visible. */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Add shadow for a pop-out effect. */
 }
 
-.header .navigation .signup-button a {
-  background-color: #ff7f50;
-  color: #fff;
-  border: 1px solid #ff7f50;
+.header .navigation .signup-button a { 
+  background-color: #ff7f50; /* Set a distinct coral color for the signup button. */
+  color: #fff; /* Ensure text contrasts with the background. */
+  border: 1px solid #ff7f50; /* Match the border with the background. */
 }
 
-.header .navigation .signup-button a:hover {
-  background-color: #f7583c;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+.header .navigation .signup-button a:hover { 
+  background-color: #f7583c; /* Darken the background slightly on hover. */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Add a shadow for interactivity. */
 }
 
 /* Hero Section */
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 100px 20px;
-  background: linear-gradient(to bottom, #e6f7ff, #b3e5fc);
+.hero { 
+  display: flex; /* Use flexbox for layout alignment. */
+  align-items: center; /* Vertically center content. */
+  justify-content: space-around; /* Evenly space child elements horizontally. */
+  padding: 100px 20px; /* Add generous padding for a spacious layout. */
+  background: linear-gradient(to bottom, #e6f7ff, #b3e5fc); /* Apply a calming gradient background. */
 }
 
-.hero-content {
-  max-width: 50%;
-  text-align: left;
+.hero-content { 
+  max-width: 50%; /* Limit width to ensure readability. */
+  text-align: left; /* Align text to the left for a professional layout. */
 }
 
-.hero h2 {
-  font-size: 3rem;
-  margin-bottom: 20px;
-  color: #0056b3;
+.hero h2 { 
+  font-size: 3rem; /* Use a large font size for main headlines. */
+  margin-bottom: 20px; /* Add spacing below the headline. */
+  color: #0056b3; /* Use a primary dark blue color for emphasis. */
 }
 
-.hero p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-  color: #333;
+.hero p { 
+  font-size: 1.2rem; /* Set a comfortable font size for body text. */
+  margin-bottom: 30px; /* Add spacing below the paragraph. */
+  color: #333; /* Use a neutral text color for readability. */
 }
 
-.hero .cta-button {
-  display: inline-block;
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+.hero .cta-button { 
+  display: inline-block; /* Make the button size based on content. */
+  padding: 15px 30px; /* Add padding for a click-friendly design. */
+  font-size: 1.2rem; /* Use a larger font size for the call-to-action. */
+  background-color: #007bff; /* Set a primary blue background for the button. */
+  color: white; /* Ensure the text stands out. */
+  text-decoration: none; /* Remove underline for a cleaner look. */
+  border-radius: 5px; /* Add rounded corners for modern design. */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions for hover effects. */
 }
 
-.hero .cta-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
+
+.hero .cta-button:hover { 
+  background-color: #0056b3; /* Darken the background color on hover for a clear visual cue. */
+  transform: scale(1.05); /* Slightly enlarge the button for an interactive effect. */
 }
 
-.hero-image img {
- width: 600px; 
- border-radius: 10px;
- box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.hero-image img { 
+  width: 600px; /* Set a fixed width for consistent layout. */
+  border-radius: 10px; /* Add rounded corners for a modern aesthetic. */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth. */
 }
 
 /* Features Section */
-.features {
-  display: flex;
-  justify-content: space-around;
-  padding: 60px 20px;
-  background: linear-gradient(to bottom, #f9f9f9, #f0f4f8);
+.features { 
+  display: flex; /* Use flexbox for a responsive layout. */
+  justify-content: space-around; /* Evenly space feature elements. */
+  padding: 60px 20px; /* Add spacing for a spacious layout. */
+  background: linear-gradient(to bottom, #f9f9f9, #f0f4f8); /* Apply a light gradient for a clean look. */
 }
 
-.features .feature {
-  text-align: center;
-  width: 30%;
+.features .feature { 
+  text-align: center; /* Center-align text within each feature. */
+  width: 30%; /* Limit the width of each feature for better layout distribution. */
 }
 
-.features .feature img {
-  max-width: 400px;
-  height: auto;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.features .feature img { 
+  max-width: 400px; /* Ensure images do not exceed the maximum width. */
+  height: auto; /* Maintain the aspect ratio of the images. */
+  border-radius: 10px; /* Add rounded corners for consistency. */
+  margin-bottom: 15px; /* Add spacing below the image. */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a light shadow for depth. */
 }
 
-.features .feature h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #007bff;
+.features .feature h3 { 
+  font-size: 1.5rem; /* Use a slightly larger font for feature titles. */
+  margin-bottom: 10px; /* Add spacing below the title. */
+  color: #007bff; /* Use a primary blue color for consistency. */
 }
 
-.features .feature p {
-  font-size: 1rem;
-  color: #555;
+.features .feature p { 
+  font-size: 1rem; /* Set a standard font size for feature descriptions. */
+  color: #555; /* Use a muted color for secondary text. */
 }
 
 /* Footer */
-.footer {
-  text-align: center;
-  padding: 20px;
-  background: linear-gradient(to right, #007bff, #0056b3);
-  color: white;
-  border-top: none;
+.footer { 
+  text-align: center; /* Center-align the footer content. */
+  padding: 20px; /* Add padding for a comfortable layout. */
+  background: linear-gradient(to right, #007bff, #0056b3); /* Apply a gradient for a polished look. */
+  color: white; /* Ensure text contrasts with the dark background. */
+  border-top: none; /* Remove unnecessary border for a cleaner appearance. */
 }
+
 /* Quote Slider */
-.quote-slider {
-  display: flex; /* Use flexbox for centering */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  font-size: 1.5rem;
-  padding: 20px;
-  background-color: #f0f4f8;
-  color: #333;
-  font-style: italic;
-  font-weight: bold;
-  position: relative;
-  overflow: hidden;
-  height: 100px; /* Adjust as needed */;
+.quote-slider { 
+  display: flex; /* Use flexbox for centering the content. */
+  justify-content: center; /* Horizontally center the quotes. */
+  align-items: center; /* Vertically center the quotes. */
+  font-size: 1.5rem; /* Use a larger font for emphasis. */
+  padding: 20px; /* Add padding for spacing. */
+  background-color: #f0f4f8; /* Set a light background for contrast. */
+  color: #333; /* Use a neutral text color for readability. */
+  font-style: italic; /* Italicize text for a quote effect. */
+  font-weight: bold; /* Use bold weight to emphasize quotes. */
+  position: relative; /* Enable positioning of child elements. */
+  overflow: hidden; /* Hide content outside the slider boundaries. */
+  height: 100px; /* Define a fixed height for the slider. */
 }
 
-.quote-slider p {
-  position: absolute;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-  text-align: center; /* Ensures multiline text is centered */
+.quote-slider p { 
+  position: absolute; /* Position text for animations. */
+  opacity: 0; /* Initially hide the text. */
+  transform: translateY(20px); /* Set starting position for animations. */
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out; /* Smooth transitions for animations. */
+  text-align: center; /* Center-align multiline quotes. */
 }
 
-.quote-slider p.active {
-  opacity: 1;
-  transform: translateY(0);
+.quote-slider p.active { 
+  opacity: 1; /* Fully display active quotes. */
+  transform: translateY(0); /* Move active quotes to their final position. */
 }
-
-

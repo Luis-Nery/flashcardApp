@@ -1,279 +1,285 @@
 /* Container styling */
 .flashcard-set-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
+  max-width: 800px; /* Limits the page width to 800px */
+  margin: 0 auto; /* Centers the container horizontally */
+  padding: 20px; /* Adds padding around the container */
+  text-align: center; /* Centers the text inside */
 }
 
 .flashcard-set-page h2 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 20px;
+  font-size: 2rem; /* Sets the font size for the title */
+  color: #333; /* Dark gray color for the text */
+  margin-bottom: 20px; /* Adds space below the title */
 }
 
 .flashcard-set-page button {
-  padding: 10px 15px;
-  margin: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  padding: 10px 15px; /* Adds padding inside the button */
+  margin: 10px; /* Adds margin around the button */
+  border: none; /* Removes the border */
+  border-radius: 5px; /* Rounds the corners of the button */
+  background-color: #007bff; /* Blue background */
+  color: #fff; /* White text */
+  cursor: pointer; /* Changes the cursor to a pointer on hover */
+  transition: background-color 0.3s; /* Smooth transition for background color */
 }
 
 .flashcard-set-page button:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker blue when hovering */
 }
 
 /* Flashcard container */
 .flashcard {
-  padding: 20px;
-  margin: 15px 0;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  word-wrap: break-word;
-  max-width: 100%;
-  overflow-wrap: break-word;
+  padding: 20px; /* Adds padding inside each flashcard */
+  margin: 15px 0; /* Adds space between the flashcards */
+  background-color: #f9f9f9; /* Light gray background */
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 8px; /* Rounds the corners of the flashcard */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth transitions for hover effects */
+  word-wrap: break-word; /* Ensures long words break into new lines */
+  max-width: 100%; /* Ensures the flashcard doesn't exceed the container width */
+  overflow-wrap: break-word; /* Prevents text from overflowing */
 }
 
 .flashcard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px); /* Moves the flashcard slightly up on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increases the shadow on hover */
 }
 
 /* Heading inside the flashcard */
 .flashcard h3 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  font-size: 1.5rem; /* Font size for the flashcard title */
+  font-weight: bold; /* Makes the heading bold */
+  color: #333; /* Dark gray color for the heading */
+  margin-bottom: 10px; /* Adds space below the heading */
+  word-wrap: break-word; /* Ensures long words break into new lines */
+  overflow-wrap: break-word; /* Prevents overflow of long words */
 }
 
 /* Paragraph inside the flashcard */
 .flashcard p {
-  font-size: 1.2rem;
-  color: #221f1f;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  font-size: 1.2rem; /* Font size for the paragraph text */
+  color: #221f1f; /* Dark color for the paragraph text */
+  word-wrap: break-word; /* Ensures long words break into new lines */
+  overflow-wrap: break-word; /* Prevents overflow of long words */
 }
 
 /* Sorting and back button styling */
 .sort-button,
 .back-button {
-  display: inline-block;
-  margin: 10px 5px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  display: inline-block; /* Makes the buttons inline elements */
+  margin: 10px 5px; /* Adds margin around the buttons */
+  padding: 10px 15px; /* Adds padding inside the buttons */
+  border: none; /* Removes the border */
+  border-radius: 5px; /* Rounds the corners of the buttons */
+  background-color: #007bff; /* Blue background */
+  color: white; /* White text */
+  cursor: pointer; /* Changes the cursor to a pointer on hover */
+  font-size: 1rem; /* Font size for the buttons */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
 }
 
 .sort-button:hover,
 .back-button:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker blue on hover */
 }
 
 /* Edit button styling */
 .edit-button {
-  background-color: #f39c12;
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  background-color: #f39c12; /* Orange background */
+  color: white; /* White text */
+  padding: 8px 12px; /* Padding inside the button */
+  border: none; /* Removes the border */
+  border-radius: 5px; /* Rounds the corners of the button */
+  cursor: pointer; /* Changes the cursor to a pointer on hover */
+  font-size: 1rem; /* Font size for the button */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
 
 .edit-button:hover {
-  background-color: #e67e22;
+  background-color: #e67e22; /* Darker orange on hover */
 }
 
 /* Textarea for editing */
 textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  resize: vertical;
+  width: 100%; /* Makes the textarea take up the full width of its container */
+  padding: 10px; /* Adds padding inside the textarea for better readability */
+  margin-bottom: 10px; /* Adds space below the textarea */
+  font-size: 1rem; /* Sets the font size for the text inside the textarea */
+  border: 1px solid #ddd; /* Adds a light gray border to the textarea */
+  border-radius: 8px; /* Rounds the corners of the textarea */
+  resize: vertical; /* Restricts resizing to vertical direction only */
 }
 
 /* Edit title button */
 .edit-title-button {
-  background-color: #f39c12;
-  color: white;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  background-color: #f39c12; /* Sets a warm orange color for the background */
+  color: white; /* Makes the text color white */
+  padding: 6px 12px; /* Provides padding inside the button */
+  border: none; /* Removes the border around the button */
+  border-radius: 5px; /* Rounds the corners of the button */
+  cursor: pointer; /* Changes the cursor to a pointer when hovered over */
+  font-size: 1rem; /* Sets the font size of the button text */
+  transition: background-color 0.3s ease; /* Adds a smooth background color transition on hover */
 }
 
 .edit-title-button:hover {
-  background-color: #e67e22;
+  background-color: #e67e22; /* Changes the background color to a darker orange when hovered */
 }
 
 /* Input for title editing */
 input[type='text'] {
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  width: 100%; /* Makes the input field take up the full width of its container */
+  padding: 10px; /* Adds padding inside the input field */
+  font-size: 1rem; /* Sets the font size of the input text */
+  border: 1px solid #ddd; /* Adds a light gray border around the input */
+  border-radius: 8px; /* Rounds the corners of the input field */
+  margin-bottom: 10px; /* Adds space below the input field */
 }
 
+/* General button styling */
 button {
-  padding: 8px 15px;
-  margin: 5px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 8px 15px; /* Adds padding inside the button */
+  margin: 5px; /* Adds space around the button */
+  border: none; /* Removes the border around the button */
+  border-radius: 4px; /* Slightly rounds the corners of the button */
+  cursor: pointer; /* Changes the cursor to a pointer on hover */
 }
 
 button:hover {
-  background-color: #3498db;
-  color: white;
+  background-color: #3498db; /* Changes the background color to blue when hovered */
+  color: white; /* Changes the text color to white when hovered */
 }
 
 /* Delete button inside flashcards */
 .delete-button {
-  background: none;
-  border: none;
-  color: #ff4d4d;
-  cursor: pointer;
-  font-size: 1.2rem;
-  margin-left: 10px;
-  transition: transform 0.2s ease;
+  background: none; /* No background for the delete button */
+  border: none; /* Removes the border around the button */
+  color: #ff4d4d; /* Sets the text color to red */
+  cursor: pointer; /* Changes the cursor to a pointer when hovered over */
+  font-size: 1.2rem; /* Sets the font size for the delete icon */
+  margin-left: 10px; /* Adds space to the left of the button */
+  transition: transform 0.2s ease; /* Adds a smooth scaling effect on hover */
 }
 
 .delete-button:hover {
-  transform: scale(1.2);
-  color: #e60000;
+  transform: scale(1.2); /* Scales up the delete button when hovered */
+  color: #e60000; /* Changes the text color to a darker red when hovered */
 }
 
 /* Floating add button */
 .add-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  border: none;
-  border-radius: 50%;
-  background-color: #007bff;
-  color: white;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  position: fixed; /* Fixes the position of the button relative to the viewport */
+  bottom: 20px; /* Positions the button 20px from the bottom of the screen */
+  right: 20px; /* Positions the button 20px from the right side of the screen */
+  width: 60px; /* Sets the width of the button */
+  height: 60px; /* Sets the height of the button */
+  border: none; /* Removes the border around the button */
+  border-radius: 50%; /* Makes the button circular */
+  background-color: #007bff; /* Sets the background color to blue */
+  color: white; /* Sets the text color to white */
+  font-size: 1.5rem; /* Increases the font size of the icon inside */
+  display: flex; /* Uses flexbox to center the icon inside the button */
+  align-items: center; /* Vertically centers the icon */
+  justify-content: center; /* Horizontally centers the icon */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow around the button */
+  cursor: pointer; /* Changes the cursor to a pointer on hover */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Adds smooth transitions for background color and scaling */
 }
 
 .add-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.1);
+  background-color: #0056b3; /* Changes the background color to a darker blue when hovered */
+  transform: scale(1.1); /* Slightly scales up the button on hover */
 }
+
 
 /* Styling for the boxed title */
 .flashcard-set-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  border: 2px solid #333;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #333;
-  margin: 20px 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex; /* Uses flexbox to align the items horizontally */
+  justify-content: space-between; /* Distributes space between the items */
+  align-items: center; /* Vertically centers the items */
+  padding: 15px 20px; /* Adds padding inside the title box */
+  border: 2px solid #333; /* Adds a dark border around the title box */
+  border-radius: 10px; /* Rounds the corners of the title box */
+  background-color: #f9f9f9; /* Sets a light gray background color */
+  font-size: 1.8rem; /* Sets the font size for the title text */
+  font-weight: bold; /* Makes the title text bold */
+  color: #333; /* Sets the text color to dark gray */
+  margin: 20px 0; /* Adds space above and below the title box */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow around the title box */
 }
 
 /* Styling for the edit button inside the boxed title */
 .flashcard-set-title button {
-  padding: 8px 12px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-left: 10px;
+  padding: 8px 12px; /* Adds padding inside the button */
+  font-size: 1rem; /* Sets the font size of the button text */
+  border: none; /* Removes the border around the button */
+  border-radius: 5px; /* Rounds the corners of the button */
+  background-color: #007bff; /* Sets the background color to blue */
+  color: #fff; /* Sets the text color to white */
+  cursor: pointer; /* Changes the cursor to a pointer when hovered over */
+  transition: background-color 0.3s; /* Adds a smooth transition for background color */
+  margin-left: 10px; /* Adds space to the left of the button */
 }
 
 .flashcard-set-title button:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Changes the background color to a darker blue on hover */
 }
 
 /* Popup styling */
 .delete-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4); /* Dark overlay for better focus */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  position: fixed; /* Fixes the popup to the viewport */
+  top: 0; /* Aligns the popup to the top of the screen */
+  left: 0; /* Aligns the popup to the left of the screen */
+  width: 100%; /* Makes the popup span the entire width of the screen */
+  height: 100%; /* Makes the popup span the entire height of the screen */
+  background-color: rgba(0, 0, 0, 0.4); /* Adds a semi-transparent dark overlay */
+  display: flex; /* Uses flexbox to center the popup content */
+  align-items: center; /* Vertically centers the popup content */
+  justify-content: center; /* Horizontally centers the popup content */
+  z-index: 1000; /* Makes sure the popup is above other elements */
 }
+
+/* Styling for the delete confirmation card inside the popup */
 .delete-popup-card {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  animation: fadeIn 0.3s ease;
-}
-.delete-popup-card-success{
-  color: green;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  animation: fadeIn 0.3s ease;
-}
-.delete-popup-card-failed{
-  color: red;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  animation: fadeIn 0.3s ease;
+  background-color: #f9f9f9; /* Sets a light gray background color for the popup card */
+  padding: 20px; /* Adds padding inside the popup card */
+  border-radius: 8px; /* Rounds the corners of the popup card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow around the card */
+  text-align: center; /* Centers the text inside the card */
+  animation: fadeIn 0.3s ease; /* Adds a fade-in animation */
 }
 
+/* Styling for success message inside the delete popup */
+.delete-popup-card-success {
+  color: green; /* Sets the text color to green for success messages */
+  background-color: #f9f9f9; /* Light gray background */
+  padding: 20px; /* Adds padding inside the card */
+  border-radius: 8px; /* Rounds the corners of the card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow around the card */
+  text-align: center; /* Centers the text inside the card */
+  animation: fadeIn 0.3s ease; /* Adds a fade-in animation */
+}
 
+/* Styling for failure message inside the delete popup */
+.delete-popup-card-failed {
+  color: red; /* Sets the text color to red for failure messages */
+  background-color: #f9f9f9; /* Light gray background */
+  padding: 20px; /* Adds padding inside the card */
+  border-radius: 8px; /* Rounds the corners of the card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow around the card */
+  text-align: center; /* Centers the text inside the card */
+  animation: fadeIn 0.3s ease; /* Adds a fade-in animation */
+}
 
 /* Animations */
 @keyframes fadeIn {
   from {
-    opacity: 0;
-    transform: scale(0.9);
+    opacity: 0; /* Starts with opacity 0 */
+    transform: scale(0.9); /* Starts with a slightly smaller scale */
   }
   to {
-    opacity: 1;
-    transform: scale(1);
+    opacity: 1; /* Ends with full opacity */
+    transform: scale(1); /* Ends with normal scale */
   }
 }
