@@ -71,7 +71,7 @@ const MyNavigationBar = () => {
       {/* Main navigation bar container. */}
 
       <Link to="/flashcardSetList" className="navbar-title">  
-        Flashcard App  
+        Your Flashcard App  
       </Link>  
       {/* Link to the flashcard set list with a custom title styling. */}
 
